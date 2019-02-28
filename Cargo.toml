@@ -1,0 +1,29 @@
+[package]
+name = "light-bitcoin"
+version = "0.1.0"
+license = "GPL-3.0"
+authors = ["Parity Technologies <admin@parity.io> and koushiro <koushiro.cqx@gmail.com>"]
+description = "A light bitcoin library."
+edition = "2018"
+
+[dependencies]
+rstd = { path = "rstd" }
+primitives = { path = "primitives" }
+chain = { path = "chain" }
+bitcrypto = { path = "crypto" }
+keys = { path = "keys" }
+script = { path = "script" }
+serialization = { path = "serialization" }
+serialization_derive = { path = "serialization_derive" }
+
+[workspace]
+members = [
+    "rstd",
+    "chain",
+    "crypto",
+    "keys",
+    "primitives",
+    "script",
+    "serialization",
+    "serialization_derive"
+]
