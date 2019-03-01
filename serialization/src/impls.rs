@@ -285,8 +285,8 @@ impl Deserializable for Compact {
 
 #[cfg(test)]
 mod tests {
-    use bytes::Bytes;
-    use {deserialize, deserialize_iterator, serialize, Error, Reader, Stream};
+    use super::*;
+    use crate::{deserialize, deserialize_iterator, serialize};
 
     #[test]
     fn test_reader_read() {

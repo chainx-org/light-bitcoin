@@ -10,7 +10,7 @@ rstd = { path = "../rstd", default-features = false }
 primitives = { path = "../primitives", default-features = false }
 
 [features]
-default = []
+default = ["std"]
 std = [
     "byteorder/std",
     "rstd/std",
