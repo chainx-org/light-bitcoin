@@ -83,6 +83,8 @@ cfg_if! {
         pub use core::slice;
         pub use core::str;
         pub use core::result;
+
+        pub mod io;
     } else {
         pub use std::*;
     }
