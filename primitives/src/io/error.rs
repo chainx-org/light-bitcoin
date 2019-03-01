@@ -1,4 +1,4 @@
-use crate::{result, str};
+use rstd::{result, str};
 
 pub type Result<T> = result::Result<T, Error>;
 

@@ -1,7 +1,9 @@
 //! Variable-length integer commonly used in the Bitcoin [P2P protocol](https://bitcoin.org/en/developer-reference#compactsize-unsigned-integers)
 
 use rstd::prelude::*;
-use rstd::{fmt, io};
+use rstd::fmt;
+
+use primitives::io;
 
 use super::reader::{Deserializable, Error as ReaderError, Reader};
 use super::stream::{Serializable, Stream};

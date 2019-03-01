@@ -28,7 +28,7 @@ use cfg_if::cfg_if;
 cfg_if! {
     if #[cfg(not(feature = "std"))] {
         pub extern crate alloc;
-
+        /*
         extern "C" {
             fn ext_malloc(size: usize) -> *mut u8;
             fn ext_free(ptr: *mut u8);
@@ -55,6 +55,7 @@ cfg_if! {
                 }
             }
         }
+        */
 
         pub use alloc::boxed;
         pub use alloc::collections;
@@ -83,8 +84,6 @@ cfg_if! {
         pub use core::slice;
         pub use core::str;
         pub use core::result;
-
-        pub mod io;
     } else {
         pub use std::*;
     }

@@ -1,5 +1,7 @@
 use rstd::prelude::*;
-use rstd::{io, marker};
+use rstd::marker;
+
+use primitives::io;
 
 use super::compact_integer::CompactInteger;
 

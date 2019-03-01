@@ -1,5 +1,6 @@
-use rstd::io;
 use rstd::prelude::*;
+
+use primitives::io;
 
 use super::reader::{Deserializable, Error, Reader};
 use super::stream::{Serializable, Stream};

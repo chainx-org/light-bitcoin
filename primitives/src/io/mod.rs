@@ -1,7 +1,8 @@
-use crate::prelude::*;
-use crate::{cmp, fmt, mem, ptr, str};
+use rstd::prelude::*;
+use rstd::{cmp, fmt, mem, ptr, str};
 
 use byteorder::ByteOrder;
+pub use byteorder::{BigEndian, LittleEndian};
 
 mod error;
 

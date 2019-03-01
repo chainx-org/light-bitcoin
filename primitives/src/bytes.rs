@@ -160,6 +160,7 @@ mod tests {
     }
 
     #[test]
+    #[cfg(features = "std")]
     fn test_bytes_debug_formatter() {
         let bytes: Bytes = "0145".into();
         assert_eq!(format!("{:?}", bytes), "0145".to_owned());

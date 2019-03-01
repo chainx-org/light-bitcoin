@@ -1,11 +1,9 @@
 //! Stream used for serialization of Bitcoin structures
 
 use rstd::prelude::*;
-use rstd::{
-    borrow::Borrow,
-    io::{self, Write},
-};
+use rstd::borrow::Borrow;
 
+use primitives::io::{self, Write};
 use primitives::Bytes;
 
 use super::compact_integer::CompactInteger;
@@ -153,7 +151,7 @@ impl Stream {
     }
 }
 
-impl Write for Stream {
+impl io::Write for Stream {
     #[inline]
     fn write(&mut self, buf: &[u8]) -> Result<usize, io::Error> {
         self.buffer.write(buf)

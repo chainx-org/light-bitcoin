@@ -1,12 +1,10 @@
 #![cfg_attr(not(feature = "std"), no_std)]
 
-#[macro_use]
-extern crate rstd;
-
 use fixed_hash::construct_fixed_hash;
 
 mod bytes;
 mod compact;
+pub mod io;
 
 pub use bytes::{Bytes, TaggedBytes};
 pub use compact::Compact;

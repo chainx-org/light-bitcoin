@@ -1,9 +1,7 @@
-use rstd::io;
 use rstd::prelude::*;
 
+use primitives::io::{self, Read, Write, LittleEndian};
 use primitives::{Bytes, Compact, H160, H256, H264, H32, H48, H512, H520, H96};
-
-use byteorder::{LittleEndian, ReadBytesExt, WriteBytesExt};
 
 use super::compact_integer::CompactInteger;
 use super::reader::{Deserializable, Error, Reader};
@@ -11,8 +9,9 @@ use super::stream::{Serializable, Stream};
 
 impl Serializable for bool {
     #[inline]
+    #[allow(unused_must_use)]
     fn serialize(&self, s: &mut Stream) {
-        s.write_u8(*self as u8).unwrap();
+        s.write_u8(*self as u8);
     }
 
     #[inline]
@@ -23,8 +22,9 @@ impl Serializable for bool {
 
 impl Serializable for i32 {
     #[inline]
+    #[allow(unused_must_use)]
     fn serialize(&self, s: &mut Stream) {
-        s.write_i32::<LittleEndian>(*self).unwrap();
+        s.write_i32::<LittleEndian>(*self);
     }
 
     #[inline]
@@ -35,8 +35,9 @@ impl Serializable for i32 {
 
 impl Serializable for i64 {
     #[inline]
+    #[allow(unused_must_use)]
     fn serialize(&self, s: &mut Stream) {
-        s.write_i64::<LittleEndian>(*self).unwrap();
+        s.write_i64::<LittleEndian>(*self);
     }
 
     #[inline]
@@ -47,8 +48,9 @@ impl Serializable for i64 {
 
 impl Serializable for u8 {
     #[inline]
+    #[allow(unused_must_use)]
     fn serialize(&self, s: &mut Stream) {
-        s.write_u8(*self).unwrap();
+        s.write_u8(*self);
     }
 
     #[inline]
@@ -59,8 +61,9 @@ impl Serializable for u8 {
 
 impl Serializable for u16 {
     #[inline]
+    #[allow(unused_must_use)]
     fn serialize(&self, s: &mut Stream) {
-        s.write_u16::<LittleEndian>(*self).unwrap();
+        s.write_u16::<LittleEndian>(*self);
     }
 
     #[inline]
@@ -71,8 +74,9 @@ impl Serializable for u16 {
 
 impl Serializable for u32 {
     #[inline]
+    #[allow(unused_must_use)]
     fn serialize(&self, s: &mut Stream) {
-        s.write_u32::<LittleEndian>(*self).unwrap();
+        s.write_u32::<LittleEndian>(*self);
     }
 
     #[inline]
@@ -83,8 +87,9 @@ impl Serializable for u32 {
 
 impl Serializable for u64 {
     #[inline]
+    #[allow(unused_must_use)]
     fn serialize(&self, s: &mut Stream) {
-        s.write_u64::<LittleEndian>(*self).unwrap();
+        s.write_u64::<LittleEndian>(*self);
     }
 
     #[inline]
