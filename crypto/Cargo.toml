@@ -5,13 +5,13 @@ authors = ["debris <marek.kotewicz@gmail.com> and koushiro <koushiro.cqx@gmail.c
 edition = "2018"
 
 [dependencies]
-rust-crypto = "0.2.36"
-siphasher = "0.1.1"
 rstd = { path = "../rstd" }
 primitives = { path = "../primitives" }
+rust-crypto = "0.2.36"
+siphasher = "0.1.1"
 
 [features]
-default = ["std"]
+default = []
 std = [
     "rstd/std",
     "primitives/std"

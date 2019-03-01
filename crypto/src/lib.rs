@@ -1,7 +1,6 @@
 use crypto as rcrypto;
 
-use rstd::hash::Hasher;
-use rstd::prelude::*;
+use rstd::{hash::Hasher, prelude::*};
 
 use primitives::{H160, H256, H32};
 
