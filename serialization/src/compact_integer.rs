@@ -1,7 +1,6 @@
 //! Variable-length integer commonly used in the Bitcoin [P2P protocol](https://bitcoin.org/en/developer-reference#compactsize-unsigned-integers)
 
-use rstd::prelude::*;
-use rstd::fmt;
+use rstd::{fmt, prelude::*};
 
 use primitives::io;
 

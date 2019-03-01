@@ -1,7 +1,6 @@
 //! Stream used for serialization of Bitcoin structures
 
-use rstd::prelude::*;
-use rstd::borrow::Borrow;
+use rstd::{borrow::Borrow, prelude::*};
 
 use primitives::io::{self, Write};
 use primitives::Bytes;

@@ -1,6 +1,6 @@
 use rstd::prelude::*;
 
-use primitives::io::{self, Read, Write, LittleEndian};
+use primitives::io::{self, LittleEndian, Read, Write};
 use primitives::{Bytes, Compact, H160, H256, H264, H32, H48, H512, H520, H96};
 
 use super::compact_integer::CompactInteger;

@@ -1,5 +1,4 @@
-use rstd::prelude::*;
-use rstd::marker;
+use rstd::{marker, prelude::*};
 
 use primitives::io;
 
