@@ -8,9 +8,9 @@
 
 use rstd::prelude::*;
 
-const ALPHABET: &'static [u8] = b"123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz";
+const ALPHABET: &[u8] = b"123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz";
 
-const B58_DIGITS_MAP: &'static [i8] = &[
+const B58_DIGITS_MAP: &[i8] = &[
 	-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
 	-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
 	-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
@@ -52,11 +52,11 @@ impl ToBase58 for [u8] {
 		let mut high = size - 1;
 
 		while i < self.len() {
-			let mut carry = self[i] as u32;
+			let mut carry = u32::from(self[i]);
 			let mut j = size - 1;
 
 			while j > high || carry != 0 {
-				carry += 256 * buffer[j] as u32;
+				carry += 256 * u32::from(buffer[j]);
 				buffer[j] = (carry % 58) as u8;
 				carry /= 58;
 
@@ -93,7 +93,7 @@ impl FromBase58 for str {
 		let bytesleft = (bin.len() % 4) as u8;
 		let zeromask = match bytesleft {
 			0 => 0u32,
-			_ => 0xffffffff << (bytesleft * 8),
+			_ => 0xffff_ffff << (bytesleft * 8),
 		};
 
 		let zcount = self.chars().take_while(|x| *x == '1').count();
@@ -115,9 +115,9 @@ impl FromBase58 for str {
 			let mut j = out.len();
 			while j != 0 {
 				j -= 1;
-				let t = out[j] as u64 * 58 + c;
-				c = (t & 0x3f00000000) >> 32;
-				out[j] = (t & 0xffffffff) as u32;
+				let t = u64::from(out[j]) * 58 + c;
+				c = (t & 0x003f_0000_0000) >> 32;
+				out[j] = (t & 0xffff_ffff) as u32;
 			}
 
 			if c != 0 {
@@ -137,7 +137,7 @@ impl FromBase58 for str {
 		let mut j = 0;
 
 		bin[0] = match bytesleft {
-			3 => ((out[0] & 0xff0000) >> 16) as u8,
+			3 => ((out[0] & 0x00ff_0000) >> 16) as u8,
 			2 => ((out[0] & 0xff00) >> 8) as u8,
 			1 => {
 				j = 1;
@@ -153,7 +153,7 @@ impl FromBase58 for str {
 			bin[i] = ((out[j] >> 0x18) & 0xff) as u8;
 			bin[i + 1] = ((out[j] >> 0x10) & 0xff) as u8;
 			bin[i + 2] = ((out[j] >> 8) & 0xff) as u8;
-			bin[i + 3] = ((out[j] >> 0) & 0xff) as u8;
+			bin[i + 3] = (out[j] & 0xff) as u8;
 			i += 4;
 			j += 1;
 		}
