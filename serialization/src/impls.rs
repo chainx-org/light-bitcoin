@@ -1,7 +1,7 @@
 use rstd::prelude::*;
 
 use primitives::io::{self, LittleEndian, Read, Write};
-use primitives::{Bytes, Compact, H160, H256, H264, H32, H48, H512, H520, H96};
+use primitives::{Bytes, Compact, H160, H256, H264, H32, H48, H512, H520};
 
 use super::compact_integer::CompactInteger;
 use super::reader::{Deserializable, Error, Reader};
@@ -241,7 +241,6 @@ macro_rules! impl_ser_for_hash {
 
 impl_ser_for_hash!(H32, 4);
 impl_ser_for_hash!(H48, 6);
-impl_ser_for_hash!(H96, 12);
 impl_ser_for_hash!(H160, 20);
 impl_ser_for_hash!(H256, 32);
 impl_ser_for_hash!(H264, 33);

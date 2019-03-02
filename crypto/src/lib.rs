@@ -1,9 +1,10 @@
+#![cfg_attr(not(feature = "std"), no_std)]
+
 use crypto as rcrypto;
 
 use rstd::{hash::Hasher, prelude::*};
 
 use primitives::{H160, H256, H32};
-
 pub use rcrypto::digest::Digest;
 use rcrypto::ripemd160::Ripemd160;
 use rcrypto::sha1::Sha1;
@@ -172,6 +173,7 @@ pub fn checksum(data: &[u8]) -> H32 {
 #[cfg(test)]
 mod tests {
     use super::*;
+
     use primitives::Bytes;
     use rstd::str::FromStr;
 

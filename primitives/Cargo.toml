@@ -10,7 +10,6 @@ byteorder = { version = "1.3", default-features = false }
 rustc-hex = { version = "2.0", default-features = false }
 fixed-hash = { version = "0.3", default-features = false }
 primitive-types = { version = "0.2", default-features = false, features = ["codec"] }
-impl-serde = { version = "0.1", optional = true }
 
 [features]
 default = ["std"]
@@ -20,10 +19,7 @@ std = [
     "rustc-hex/std",
     "fixed-hash/std",
     "primitive-types/std",
-    "primitive-types/serde",
-    "primitive-types/heapsize",
-    "primitive-types/byteorder",
-    "primitive-types/rustc-hex",
-    "primitive-types/libc",
-    "impl-serde"
 ]
+
+impl-serde = ["std", "primitive-types/serde"]
+impl-rlp = ["std", "primitive-types/rlp"]
