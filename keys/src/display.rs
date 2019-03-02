@@ -1,10 +1,13 @@
-use std::ops::Deref;
-use Error;
+use rstd::{ops, prelude::*};
+
+use super::error::Error;
 
 pub trait DisplayLayout {
-	type Target: Deref<Target = [u8]>;
+    type Target: ops::Deref<Target = [u8]>;
 
-	fn layout(&self) -> Self::Target;
+    fn layout(&self) -> Self::Target;
 
-	fn from_layout(data: &[u8]) -> Result<Self, Error> where Self: Sized;
+    fn from_layout(data: &[u8]) -> Result<Self, Error>
+    where
+        Self: Sized;
 }
