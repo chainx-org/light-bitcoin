@@ -5,38 +5,8 @@ use rstd::{fmt, marker, ops, prelude::*, str};
 use rustc_hex::{FromHex, FromHexError, ToHex};
 
 /// Wrapper around `Vec<u8>`
-#[derive(Ord, PartialOrd, Eq, PartialEq, Clone, Default, Hash)]
+#[derive(Ord, PartialOrd, Eq, PartialEq, Clone, Hash, Default)]
 pub struct Bytes(Vec<u8>);
-
-impl Bytes {
-    pub fn new() -> Self {
-        Bytes::default()
-    }
-
-    pub fn new_with_len(len: usize) -> Self {
-        Bytes(vec![0; len])
-    }
-
-    pub fn take(self) -> Vec<u8> {
-        self.0
-    }
-
-    pub fn len(&self) -> usize {
-        self.0.len()
-    }
-
-    pub fn is_empty(&self) -> bool {
-        self.len() == 0
-    }
-
-    pub fn append(&mut self, other: &mut Bytes) {
-        self.0.append(&mut other.0);
-    }
-
-    pub fn split_off(&mut self, at: usize) -> Bytes {
-        Bytes(self.0.split_off(at))
-    }
-}
 
 impl<'a> From<&'a [u8]> for Bytes {
     fn from(v: &[u8]) -> Self {
@@ -99,6 +69,36 @@ impl AsRef<[u8]> for Bytes {
 impl AsMut<[u8]> for Bytes {
     fn as_mut(&mut self) -> &mut [u8] {
         &mut self.0
+    }
+}
+
+impl Bytes {
+    pub fn new() -> Self {
+        Bytes::default()
+    }
+
+    pub fn new_with_len(len: usize) -> Self {
+        Bytes(vec![0; len])
+    }
+
+    pub fn take(self) -> Vec<u8> {
+        self.0
+    }
+
+    pub fn len(&self) -> usize {
+        self.0.len()
+    }
+
+    pub fn is_empty(&self) -> bool {
+        self.len() == 0
+    }
+
+    pub fn append(&mut self, other: &mut Bytes) {
+        self.0.append(&mut other.0);
+    }
+
+    pub fn split_off(&mut self, at: usize) -> Bytes {
+        Bytes(self.0.split_off(at))
     }
 }
 

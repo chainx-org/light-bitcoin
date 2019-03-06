@@ -10,7 +10,6 @@ use serialization::{
     Stream, SERIALIZE_TRANSACTION_WITNESS,
 };
 
-//use heapsize::HeapSizeOf;
 use rustc_hex::FromHex;
 
 use super::constants::{LOCKTIME_THRESHOLD, SEQUENCE_FINAL};
@@ -151,6 +150,12 @@ pub struct Transaction {
     pub lock_time: u32,
 }
 
+impl From<&'static str> for Transaction {
+    fn from(s: &'static str) -> Self {
+        deserialize(&s.from_hex::<Vec<u8>>().unwrap() as &[u8]).unwrap()
+    }
+}
+
 impl Transaction {
     pub fn hash(&self) -> H256 {
         dhash256(&serialize(self))
@@ -223,12 +228,6 @@ impl Transaction {
             result += output.value;
         }
         result
-    }
-}
-
-impl From<&'static str> for Transaction {
-    fn from(s: &'static str) -> Self {
-        deserialize(&s.from_hex::<Vec<u8>>().unwrap() as &[u8]).unwrap()
     }
 }
 
