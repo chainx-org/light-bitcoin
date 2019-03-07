@@ -13,7 +13,7 @@ rustc-hex = { version = "2", default-features = false }
 libsecp256k1 = "0.2.2"  # support `no_std`
 
 [features]
-#default = ["std"]
+default = ["std"]
 std = [
     "rstd/std",
     "primitives/std",

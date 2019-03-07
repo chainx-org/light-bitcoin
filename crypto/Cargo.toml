@@ -17,7 +17,7 @@ siphasher = "0.3"   # support `no_std`
 rustc-hex = { version = "2.0", default-features = false }
 
 [features]
-#default = ["std"]
+default = ["std"]
 std = [
     "rstd/std",
     "primitives/std",

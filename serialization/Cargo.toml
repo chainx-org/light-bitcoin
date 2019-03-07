@@ -9,7 +9,7 @@ rstd = { path = "../rstd", default-features = false }
 primitives = { path = "../primitives", default-features = false }
 
 [features]
-#default = ["std"]
+default = ["std"]
 std = [
     "rstd/std",
     "primitives/std",
