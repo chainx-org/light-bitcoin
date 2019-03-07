@@ -22,15 +22,22 @@ jobs:
 
       - run:
           name: Checking format
-          command: cargo fmt -- --check
+          command: |
+            export PATH=~/.cargo/bin:$PATH
+            cargo fmt -- --check
 
       - run:
           name: Lint
-          command: cargo clippy -- -Dwarnings
+          command: |
+            export PATH=~/.cargo/bin:$PATH
+            cargo clippy -- -Dwarnings
 
       - run:
           name: Test
-          command: export RUST_BACKTRACE=1 && cargo test
+          command: |
+            export PATH=~/.cargo/bin:$PATH
+            export RUST_BACKTRACE=1
+            cargo test
 
 workflows:
   version: 2.1
