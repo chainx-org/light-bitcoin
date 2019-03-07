@@ -14,11 +14,10 @@ jobs:
           command: |
             apt-get update
             apt-get install -y curl
-            curl https://sh.rustup.rs -sSf | sh -s -- --no-modify-path --default-toolchain nightly -y;
+            curl https://sh.rustup.rs -sSf | sh -s -- --no-modify-path --default-toolchain nightly-2019-03-05 -y;
+            source $HOME/.cargo/env
             rustup component add rustfmt
             rustup component add clippy
-            source ~/.cargo/env
-            export PATH=~.cargo/bin:$PATH
           no_output_timeout: 1800s
 
       - run:
