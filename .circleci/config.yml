@@ -6,14 +6,17 @@ jobs:
 
     working_directory: ~/light-bitcoin-ci
 
+    environment:
+      CODECOV_TOKEN: "985c836e-8c19-4470-9a56-ea6a5b6424ed"
+
     steps:
       - checkout
 
       - run:
-          name: Setting up build environment
+          name: Setup build environment
           command: |
             apt-get update
-            apt-get install -y curl build-essential zlib1g-dev
+            apt-get install -y curl wget build-essential zlib1g-dev libcurl4-openssl-dev libelf-dev libdw-dev cmake binutils-dev libiberty-dev
             curl https://sh.rustup.rs -sSf | sh -s -- --no-modify-path --default-toolchain nightly-2019-03-05 -y;
             source $HOME/.cargo/env
             rustup component add rustfmt
@@ -21,7 +24,7 @@ jobs:
           no_output_timeout: 1800s
 
       - run:
-          name: Checking format
+          name: Format
           command: |
             export PATH=~/.cargo/bin:$PATH
             cargo fmt -- --check
@@ -38,6 +41,30 @@ jobs:
             export PATH=~/.cargo/bin:$PATH
             export RUST_BACKTRACE=1
             cargo test --all
+
+      - run:
+          name: Install kcov
+          command: |
+            wget https://github.com/SimonKagstrom/kcov/archive/master.tar.gz
+            tar xzf master.tar.gz
+            cd kcov-master
+            mkdir build
+            cd build
+            cmake ..
+            make
+            make install DESTDIR=../../kcov-build
+            cd ../..
+            rm -rf kcov-master
+
+      - run:
+          name: Coverage
+          command: |
+            for file in target/debug/light-bitcoin-*; do [ -x "${file}" ] || continue;
+              mkdir -p "target/cov/$(basename $file)";
+              ./kcov-build/usr/local/bin/kcov --exclude-pattern=/.cargo,/usr/lib --verify "target/cov/$(basename $file)" "$file";
+            done
+            bash <(curl -s https://codecov.io/bash)
+            echo "Uploaded code coverage"
 
 workflows:
   version: 2.1
