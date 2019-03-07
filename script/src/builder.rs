@@ -91,9 +91,9 @@ impl Builder {
             self.data.push(Opcode::OP_PUSHDATA2 as u8);
             self.data.push(len as u8);
             self.data.push((len >> 8) as u8);
-        } else if len < 0xffff_ffff {
+        } else if len <= 0xffff_ffff {
             // Avoid compilation errors when the build target is wasm32-unknown-unknown
-            // len < 0x1_0000_0000 => len <= 0xffff_ffff
+            // len < 0x1_0000_0000 ---> len <= 0xffff_ffff
             self.data.push(Opcode::OP_PUSHDATA4 as u8);
             self.data.push(len as u8);
             self.data.push((len >> 8) as u8);
