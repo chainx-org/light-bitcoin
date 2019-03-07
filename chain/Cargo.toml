@@ -12,7 +12,7 @@ serialization = { path = "../serialization", default-features = false }
 rustc-hex = { version = "2", default-features = false }
 
 [features]
-default = ["std"]
+#default = ["std"]
 std = [
     "rstd/std",
     "primitives/std",

@@ -16,7 +16,7 @@ chain = { path = "../chain", default-features = false }
 rustc-hex = { version = "2.0", default-features = false }
 
 [features]
-default = ["std"]
+#default = ["std"]
 std = [
     "rstd/std",
     "primitives/std",

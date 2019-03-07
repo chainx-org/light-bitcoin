@@ -383,7 +383,6 @@ fn compute_hash_outputs(
 mod tests {
     use super::*;
     use keys::{Address, Private};
-    use rstd::str::FromStr;
     use rustc_hex::FromHex;
 
     fn reverse_hash_hex_str(s: &str) -> Vec<u8> {
@@ -407,9 +406,12 @@ mod tests {
         let previous_output = "76a914df3bd30160e6c6145baaf2c88a8844c13a00d1d588ac".into();
         let current_output: Bytes = "76a914c8e90996c7c6080ee06284600c684ed904d14c5c88ac".into();
         let value = 91234;
-        let expected_signature_hash: H256 =
-            FromStr::from_str("5fda68729a6312e17e641e9a49fac2a4a6a680126610af573caab270d232f850")
-                .unwrap();
+        let expected_signature_hash = H256::from_slice(
+            &FromHex::from_hex::<Vec<u8>>(
+                "5fda68729a6312e17e641e9a49fac2a4a6a680126610af573caab270d232f850",
+            )
+            .unwrap(),
+        );
 
         // this is irrelevant
         let kp = KeyPair::from_private(private).unwrap();

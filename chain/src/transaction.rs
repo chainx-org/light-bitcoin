@@ -294,7 +294,6 @@ impl Deserializable for Transaction {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use rstd::str::FromStr;
 
     // real transaction from block 80000
     // https://blockchain.info/rawtx/5a4ebf66822b0b2d56bd9dc64ece0bc38ee7844a23ff1d7320a88c5fdb2ad3e2
@@ -347,7 +346,7 @@ mod tests {
 			version: 1,
 			inputs: vec![TransactionInput {
 				previous_output: OutPoint {
-					hash: FromStr::from_str("fff7f7881a8099afa6940d42d1e7f6362bec38171ea3edf433541db4e4ad969f").unwrap(),
+					hash: H256::from_slice(&FromHex::from_hex::<Vec<u8>>("fff7f7881a8099afa6940d42d1e7f6362bec38171ea3edf433541db4e4ad969f").unwrap()),
 					index: 0,
 				},
 				script_sig: "4830450221008b9d1dc26ba6a9cb62127b02742fa9d754cd3bebf337f7a55d114c8e5cdd30be022040529b194ba3f9281a99f2b1c0a19c0489bc22ede944ccf4ecbab4cc618ef3ed01".into(),
@@ -355,7 +354,7 @@ mod tests {
 				script_witness: vec![],
 			}, TransactionInput {
 				previous_output: OutPoint {
-					hash: FromStr::from_str("ef51e1b804cc89d182d279655c3aa89e815b1b309fe287d9b2b55d57b90ec68a").unwrap(),
+                    hash: H256::from_slice(&FromHex::from_hex::<Vec<u8>>("ef51e1b804cc89d182d279655c3aa89e815b1b309fe287d9b2b55d57b90ec68a").unwrap()),
 					index: 1,
 				},
 				script_sig: "".into(),

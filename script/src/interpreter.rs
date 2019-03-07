@@ -1252,11 +1252,11 @@ pub fn eval_script(
 #[cfg(test)]
 mod tests {
     use super::*;
-    use rstd::iter;
     use crate::sign::TransactionInputSigner;
     use crate::verify::{NoopSignatureChecker, TransactionSignatureChecker};
     use chain::Transaction;
     use keys::{KeyPair, Network, Private};
+    use rstd::iter;
 
     #[test]
     fn tests_is_public_key() {
