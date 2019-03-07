@@ -17,7 +17,7 @@ jobs:
           command: |
             apt-get update
             apt-get install -y curl wget build-essential zlib1g-dev python libcurl4-openssl-dev libelf-dev libdw-dev cmake binutils-dev libiberty-dev
-            curl https://sh.rustup.rs -sSf | sh -s -- --no-modify-path --default-toolchain nightly-2019-03-05 -y;
+            curl https://sh.rustup.rs -sSf | sh -s -- --no-modify-path --default-toolchain nightly -y;
             source $HOME/.cargo/env
             rustup component add rustfmt
             rustup component add clippy
@@ -57,7 +57,7 @@ jobs:
             cd ../..
             rm -rf kcov-master
             # generate and upload code coverage
-            for file in target/debug/light-bitcoin-*; do
+            for file in target/debug/*-*; do
               [ -x "${file}" ] || continue
               mkdir -p "target/cov/$(basename $file)"
               ./kcov-build/usr/local/bin/kcov --exclude-pattern=/.cargo,/usr/lib --verify "target/cov/$(basename $file)" "$file"
