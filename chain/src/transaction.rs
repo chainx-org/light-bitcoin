@@ -3,7 +3,7 @@
 
 use rstd::prelude::*;
 
-use bitcrypto::dhash256;
+use crypto::dhash256;
 use primitives::{io, Bytes, H256};
 use serialization::{
     deserialize, serialize, serialize_with_flags, Deserializable, Reader, Serializable, Stream,

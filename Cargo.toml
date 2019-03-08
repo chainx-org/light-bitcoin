@@ -8,24 +8,24 @@ edition = "2018"
 
 [dependencies]
 rstd = { path = "rstd" }
-primitives = { path = "primitives" }
-bitcrypto = { path = "crypto" }
 base58 = { path = "base58" }
+primitives = { path = "primitives" }
+serialization = { path = "serialization" }
+crypto = { path = "crypto" }
 keys = { path = "keys" }
 chain = { path = "chain" }
-script = { path = "script" }
-serialization = { path = "serialization" }
 #merkle = { path = "merkle" }
+script = { path = "script" }
 
 [workspace]
 members = [
     "rstd",
-    "primitives",
-    "crypto",
     "base58",
+    "primitives",
+    "serialization",
+    "crypto",
     "keys",
     "chain",
-    "script",
-    "serialization",
 #    "merkle",
+    "script",
 ]

@@ -1,6 +1,6 @@
 use rstd::{fmt, prelude::*};
 
-use bitcrypto::dhash256;
+use crypto::dhash256;
 use primitives::{io, Compact, H256};
 use serialization::{deserialize, serialize, Deserializable, Reader, Serializable, Stream};
 

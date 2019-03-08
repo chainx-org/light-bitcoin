@@ -1,6 +1,6 @@
 use rstd::prelude::*;
 
-use bitcrypto::dhash256;
+use crypto::dhash256;
 use primitives::{H256, H512};
 
 #[inline]

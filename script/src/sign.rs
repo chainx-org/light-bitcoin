@@ -2,8 +2,8 @@
 
 use rstd::prelude::*;
 
-use bitcrypto::dhash256;
 use chain::{OutPoint, Transaction, TransactionInput, TransactionOutput};
+use crypto::dhash256;
 use keys::KeyPair;
 use primitives::{Bytes, H256};
 use serialization::Stream;

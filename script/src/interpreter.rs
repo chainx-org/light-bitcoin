@@ -1,7 +1,7 @@
 use rstd::{cmp, mem, prelude::*};
 
-use bitcrypto::{dhash160, dhash256, ripemd160, sha1, sha256};
 use chain::constants::SEQUENCE_LOCKTIME_DISABLE_FLAG;
+use crypto::{dhash160, dhash256, ripemd160, sha1, sha256};
 use keys::{Message, Public, Signature};
 use primitives::{Bytes, H256};
 

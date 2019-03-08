@@ -1,5 +1,5 @@
 [package]
-name = "bitcrypto"
+name = "crypto"
 version = "0.1.0"
 authors = ["debris <marek.kotewicz@gmail.com> and koushiro <koushiro.cqx@gmail.com>"]
 edition = "2018"

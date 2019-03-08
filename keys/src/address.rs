@@ -8,7 +8,7 @@
 use rstd::{fmt, ops, prelude::*, str};
 
 use base58::{FromBase58, ToBase58};
-use bitcrypto::checksum;
+use crypto::checksum;
 
 use super::display::DisplayLayout;
 use super::error::Error;
