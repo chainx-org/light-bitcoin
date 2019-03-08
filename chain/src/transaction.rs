@@ -6,8 +6,8 @@ use rstd::prelude::*;
 use bitcrypto::dhash256;
 use primitives::{io, Bytes, H256};
 use serialization::{
-    deserialize, serialize, serialize_with_flags, Deserializable, Reader, Serializable,
-    Stream, SERIALIZE_TRANSACTION_WITNESS,
+    deserialize, serialize, serialize_with_flags, Deserializable, Reader, Serializable, Stream,
+    SERIALIZE_TRANSACTION_WITNESS,
 };
 
 use rustc_hex::FromHex;
