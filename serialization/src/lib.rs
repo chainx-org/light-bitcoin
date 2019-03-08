@@ -11,7 +11,7 @@ pub use primitives::*;
 pub use self::compact_integer::CompactInteger;
 pub use self::list::List;
 pub use self::reader::{
-    deserialize, deserialize_iterator, Deserializable, Error, ReadIterator, Reader,
+    deserialize, deserialize_iterator, Deserializable, ReadIterator, Reader,
 };
 pub use self::stream::{
     serialize, serialize_list, serialize_with_flags, serialized_list_size,

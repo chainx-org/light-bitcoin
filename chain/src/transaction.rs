@@ -6,7 +6,7 @@ use rstd::prelude::*;
 use bitcrypto::dhash256;
 use primitives::{io, Bytes, H256};
 use serialization::{
-    deserialize, serialize, serialize_with_flags, Deserializable, Error, Reader, Serializable,
+    deserialize, serialize, serialize_with_flags, Deserializable, Reader, Serializable,
     Stream, SERIALIZE_TRANSACTION_WITNESS,
 };
 
@@ -45,7 +45,7 @@ impl Serializable for OutPoint {
 }
 
 impl Deserializable for OutPoint {
-    fn deserialize<T>(reader: &mut Reader<T>) -> Result<Self, Error>
+    fn deserialize<T>(reader: &mut Reader<T>) -> Result<Self, io::Error>
     where
         Self: Sized,
         T: io::Read,
@@ -94,7 +94,7 @@ impl Serializable for TransactionInput {
 }
 
 impl Deserializable for TransactionInput {
-    fn deserialize<T>(reader: &mut Reader<T>) -> Result<Self, Error>
+    fn deserialize<T>(reader: &mut Reader<T>) -> Result<Self, io::Error>
     where
         Self: Sized,
         T: io::Read,
@@ -130,7 +130,7 @@ impl Serializable for TransactionOutput {
 }
 
 impl Deserializable for TransactionOutput {
-    fn deserialize<T>(reader: &mut Reader<T>) -> Result<Self, Error>
+    fn deserialize<T>(reader: &mut Reader<T>) -> Result<Self, io::Error>
     where
         Self: Sized,
         T: io::Read,
@@ -257,7 +257,7 @@ impl Serializable for Transaction {
 }
 
 impl Deserializable for Transaction {
-    fn deserialize<T>(reader: &mut Reader<T>) -> Result<Self, Error>
+    fn deserialize<T>(reader: &mut Reader<T>) -> Result<Self, io::Error>
     where
         Self: Sized,
         T: io::Read,
@@ -267,7 +267,7 @@ impl Deserializable for Transaction {
         let read_witness = if inputs.is_empty() {
             let witness_flag: u8 = reader.read()?;
             if witness_flag != WITNESS_FLAG {
-                return Err(Error::MalformedData);
+                return Err(io::Error::ReadMalformedData);
             }
 
             inputs = reader.read_list()?;

@@ -23,5 +23,5 @@ std = [
     "bitcrypto/std",
     "serialization/std",
     "keys/std",
-    "chain/std"
+    "chain/std",
 ]

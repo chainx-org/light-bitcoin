@@ -4,7 +4,7 @@ use rstd::{fmt, prelude::*};
 
 use primitives::io;
 
-use super::reader::{Deserializable, Error as ReaderError, Reader};
+use super::reader::{Deserializable, Reader};
 use super::stream::{Serializable, Stream};
 
 /// A type of variable-length integer commonly used in the Bitcoin P2P protocol and Bitcoin serialized data structures.
@@ -88,7 +88,7 @@ impl Serializable for CompactInteger {
 }
 
 impl Deserializable for CompactInteger {
-    fn deserialize<T>(reader: &mut Reader<T>) -> Result<Self, ReaderError>
+    fn deserialize<T>(reader: &mut Reader<T>) -> Result<Self, io::Error>
     where
         T: io::Read,
     {
@@ -152,7 +152,7 @@ mod tests {
         );
         assert_eq!(
             reader.read::<CompactInteger>().unwrap_err(),
-            ReaderError::UnexpectedEnd
+            io::Error::UnexpectedEof
         );
     }
 }

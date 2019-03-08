@@ -15,5 +15,5 @@ rstd = { path = "../rstd", default-features = false }
 [features]
 default = ["std"]
 std = [
-    "rstd/std"
+    "rstd/std",
 ]

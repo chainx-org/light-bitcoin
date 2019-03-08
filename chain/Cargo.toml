@@ -18,5 +18,5 @@ std = [
     "primitives/std",
     "bitcrypto/std",
     "serialization/std",
-    "rustc-hex/std"
+    "rustc-hex/std",
 ]

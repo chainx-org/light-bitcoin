@@ -15,6 +15,7 @@ keys = { path = "keys" }
 chain = { path = "chain" }
 script = { path = "script" }
 serialization = { path = "serialization" }
+#merkle = { path = "merkle" }
 
 [workspace]
 members = [
@@ -25,5 +26,6 @@ members = [
     "keys",
     "chain",
     "script",
-    "serialization"
+    "serialization",
+#    "merkle",
 ]
