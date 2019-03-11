@@ -1,7 +1,7 @@
 //! Bitcoin trainsaction.
 //! https://en.bitcoin.it/wiki/Protocol_documentation#tx
 
-use rstd::prelude::*;
+use ustd::prelude::*;
 
 use crypto::dhash256;
 use primitives::{io, Bytes, H256};

@@ -1,6 +1,6 @@
 //! Bitcoin key pair.
 
-use rstd::{fmt, prelude::*};
+use ustd::{fmt, prelude::*};
 
 use primitives::{H264, H520};
 

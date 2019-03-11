@@ -1,4 +1,4 @@
-use rstd::{result, str};
+use ustd::{result, str};
 
 pub type Result<T> = result::Result<T, Error>;
 

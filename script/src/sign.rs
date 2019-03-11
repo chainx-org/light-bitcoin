@@ -1,6 +1,6 @@
 //! Transaction signer
 
-use rstd::prelude::*;
+use ustd::prelude::*;
 
 use chain::{OutPoint, Transaction, TransactionInput, TransactionOutput};
 use crypto::dhash256;

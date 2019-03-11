@@ -1,6 +1,6 @@
 //! Secret with additional network identifier and format type
 
-use rstd::{fmt, prelude::*, str};
+use ustd::{fmt, prelude::*, str};
 
 use crypto::checksum;
 use primitives::H520;

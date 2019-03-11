@@ -7,7 +7,7 @@ description = "A light bitcoin library inherited from parity-bitcoin, with `no_s
 edition = "2018"
 
 [dependencies]
-rstd = { path = "rstd" }
+ustd = { path = "ustd" }
 base58 = { path = "base58" }
 primitives = { path = "primitives" }
 serialization = { path = "serialization" }
@@ -19,7 +19,7 @@ script = { path = "script" }
 
 [workspace]
 members = [
-    "rstd",
+    "ustd",
     "base58",
     "primitives",
     "serialization",

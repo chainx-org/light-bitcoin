@@ -1,4 +1,4 @@
-use rstd::prelude::*;
+use ustd::prelude::*;
 
 use primitives::io;
 

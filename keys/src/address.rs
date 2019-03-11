@@ -5,7 +5,7 @@
 //!
 //! https://en.bitcoin.it/wiki/Address
 
-use rstd::{fmt, ops, prelude::*, str};
+use ustd::{fmt, ops, prelude::*, str};
 
 use base58::{FromBase58, ToBase58};
 use crypto::checksum;

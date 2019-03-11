@@ -1,7 +1,6 @@
 mod error;
 
-use rstd::prelude::*;
-use rstd::{cmp, fmt, mem, ptr, str};
+use ustd::{cmp, fmt, mem, prelude::*, ptr, str};
 
 use byteorder::ByteOrder;
 pub use byteorder::{BigEndian, LittleEndian};
