@@ -356,21 +356,36 @@ mod tests {
             dhash256(&values[0].as_bytes()),
             dhash256(&values[1].as_bytes()),
             dhash256(&values[2].as_bytes()),
-            dhash256(&values[3].as_bytes())
+            dhash256(&values[3].as_bytes()),
         ];
-        let tree = PartialMerkleTree::build(hashes, BitVec::from_elem(4, true)).parse().unwrap();
-//        println!("tree: {:?}", tree);
+        let tree = PartialMerkleTree::build(hashes, BitVec::from_elem(4, true))
+            .parse()
+            .unwrap();
+        //        println!("tree: {:?}", tree);
 
-        let h01 = vec![dhash256(&values[0].as_bytes()), dhash256(&values[1].as_bytes())];
-        let tree01 = PartialMerkleTree::build(h01, BitVec::from_elem(2, true)).parse().unwrap();
-//        println!("tree01: {:?}", tree01);
+        let h01 = vec![
+            dhash256(&values[0].as_bytes()),
+            dhash256(&values[1].as_bytes()),
+        ];
+        let tree01 = PartialMerkleTree::build(h01, BitVec::from_elem(2, true))
+            .parse()
+            .unwrap();
+        //        println!("tree01: {:?}", tree01);
 
-        let h23 = vec![dhash256(&values[2].as_bytes()), dhash256(&values[3].as_bytes())];
-        let tree23 = PartialMerkleTree::build(h23, BitVec::from_elem(2, true)).parse().unwrap();
-//        println!("tree23: {:?}", tree23);
+        let h23 = vec![
+            dhash256(&values[2].as_bytes()),
+            dhash256(&values[3].as_bytes()),
+        ];
+        let tree23 = PartialMerkleTree::build(h23, BitVec::from_elem(2, true))
+            .parse()
+            .unwrap();
+        //        println!("tree23: {:?}", tree23);
 
-        let tree0123 = PartialMerkleTree::build(vec![tree01.root, tree23.root], BitVec::from_elem(2, true)).parse().unwrap();
-//        println!("tree0123: {:?}", tree0123);
+        let tree0123 =
+            PartialMerkleTree::build(vec![tree01.root, tree23.root], BitVec::from_elem(2, true))
+                .parse()
+                .unwrap();
+        //        println!("tree0123: {:?}", tree0123);
         assert_eq!(tree.root, tree0123.root);
     }
 }
