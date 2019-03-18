@@ -8,7 +8,7 @@ edition = "2018"
 ustd = { git = "https://github.com/chainx-org/chainx-common", default-features = false }
 base58 = { git = "https://github.com/chainx-org/chainx-common", default-features = false }
 primitives = { path = "../primitives", default-features = false }
-crypto = { path = "../crypto", default-featuresrus = false }
+crypto = { path = "../crypto", default-features = false }
 rustc-hex = { version = "2.0", default-features = false }
 libsecp256k1 = "0.2.2"  # support `no_std`
 
