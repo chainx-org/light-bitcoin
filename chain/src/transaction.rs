@@ -12,6 +12,9 @@ use serialization::{
 
 use rustc_hex::FromHex;
 
+#[cfg(feature = "std")]
+use serde_derive::Serialize;
+
 use super::constants::{LOCKTIME_THRESHOLD, SEQUENCE_FINAL};
 
 /// Must be zero.
@@ -20,6 +23,7 @@ const WITNESS_MARKER: u8 = 0;
 const WITNESS_FLAG: u8 = 1;
 
 #[derive(Ord, PartialOrd, PartialEq, Eq, Copy, Clone, Debug, Default)]
+#[cfg_attr(feature = "std", derive(Serialize))]
 pub struct OutPoint {
     pub hash: H256,
     pub index: u32,
@@ -58,6 +62,7 @@ impl Deserializable for OutPoint {
 }
 
 #[derive(Ord, PartialOrd, Eq, PartialEq, Clone, Debug, Default)]
+#[cfg_attr(feature = "std", derive(Serialize))]
 pub struct TransactionInput {
     pub previous_output: OutPoint,
     pub script_sig: Bytes,
@@ -109,6 +114,7 @@ impl Deserializable for TransactionInput {
 }
 
 #[derive(Ord, PartialOrd, Eq, PartialEq, Clone, Debug)]
+#[cfg_attr(feature = "std", derive(Serialize))]
 pub struct TransactionOutput {
     pub value: u64,
     pub script_pubkey: Bytes,
@@ -143,6 +149,7 @@ impl Deserializable for TransactionOutput {
 }
 
 #[derive(Ord, PartialOrd, Eq, PartialEq, Clone, Debug, Default)]
+#[cfg_attr(feature = "std", derive(Serialize))]
 pub struct Transaction {
     pub version: i32,
     pub inputs: Vec<TransactionInput>,
@@ -288,6 +295,28 @@ impl Deserializable for Transaction {
             outputs,
             lock_time: reader.read()?,
         })
+    }
+}
+
+impl parity_codec::Encode for Transaction {
+    fn encode(&self) -> Vec<u8> {
+        let value = serialize::<Transaction>(&self);
+        value.encode()
+    }
+}
+
+impl parity_codec::Decode for Transaction {
+    fn decode<I: parity_codec::Input>(value: &mut I) -> Option<Self> {
+        let value: Option<Vec<u8>> = parity_codec::Decode::decode(value);
+        if let Some(value) = value {
+            if let Ok(tx) = deserialize(Reader::new(&value)) {
+                Some(tx)
+            } else {
+                None
+            }
+        } else {
+            None
+        }
     }
 }
 

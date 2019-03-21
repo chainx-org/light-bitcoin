@@ -102,6 +102,17 @@ impl Bytes {
     }
 }
 
+#[cfg(feature = "std")]
+impl serde::Serialize for Bytes {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        let hex = self.0.to_hex::<String>();
+        serializer.serialize_str(&format!("0x{}", hex))
+    }
+}
+
 /// Wrapper around `Vec<u8>` which represent associated type
 #[derive(Default, PartialEq, Clone)]
 pub struct TaggedBytes<T> {
