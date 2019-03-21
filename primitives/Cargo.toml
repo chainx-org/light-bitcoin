@@ -22,4 +22,3 @@ std = [
 ]
 impl-rustc-hex = ["primitive-types/rustc-hex", "fixed-hash/rustc-hex"]
 impl-serde = ["std", "primitive-types/serde"]
-impl-rlp = ["std", "primitive-types/rlp"]
