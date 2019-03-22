@@ -6,16 +6,6 @@ authors = ["Parity Technologies <admin@parity.io> and koushiro <koushiro.cqx@gma
 description = "A light bitcoin library inherited from parity-bitcoin, with `no_std` support."
 edition = "2018"
 
-[dependencies]
-primitives = { path = "primitives" }
-serialization = { path = "serialization" }
-serialization_derive = { path = "serialization_derive" }
-crypto = { path = "crypto" }
-keys = { path = "keys" }
-chain = { path = "chain" }
-script = { path = "script" }
-merkle = { path = "merkle" }
-
 [workspace]
 members = [
     "primitives",
