@@ -9,6 +9,7 @@ edition = "2018"
 [dependencies]
 primitives = { path = "primitives" }
 serialization = { path = "serialization" }
+serialization_derive = { path = "serialization_derive" }
 crypto = { path = "crypto" }
 keys = { path = "keys" }
 chain = { path = "chain" }
@@ -19,6 +20,7 @@ merkle = { path = "merkle" }
 members = [
     "primitives",
     "serialization",
+    "serialization_derive",
     "crypto",
     "keys",
     "chain",
