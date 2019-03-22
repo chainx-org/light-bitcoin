@@ -14,7 +14,7 @@ use serialization::{Deserializable, Reader, Serializable, Stream};
 
 use parity_codec_derive::{Decode, Encode};
 #[cfg(feature = "std")]
-use serde_derive::Serialize;
+use serde_derive::{Deserialize, Serialize};
 
 use super::display::DisplayLayout;
 use super::error::Error;
@@ -23,7 +23,7 @@ use super::AddressHash;
 /// There are two address formats currently in use.
 /// https://bitcoin.org/en/developer-reference#address-conversion
 #[derive(Ord, PartialOrd, Eq, PartialEq, Copy, Clone, Debug, Encode, Decode)]
-#[cfg_attr(feature = "std", derive(Serialize))]
+#[cfg_attr(feature = "std", derive(Serialize, Deserialize))]
 pub enum Type {
     /// Pay to PubKey Hash
     /// Common P2PKH which begin with the number 1, eg: 1BvBMSEYstWetqTFn5Au4m4GFg7xJaNVN2.
@@ -72,7 +72,7 @@ impl Deserializable for Type {
 }
 
 #[derive(Ord, PartialOrd, Eq, PartialEq, Copy, Clone, Debug, Encode, Decode)]
-#[cfg_attr(feature = "std", derive(Serialize))]
+#[cfg_attr(feature = "std", derive(Serialize, Deserialize))]
 pub enum Network {
     Mainnet,
     Testnet,
@@ -116,7 +116,7 @@ impl Deserializable for Network {
 
 /// `AddressHash` with network identifier and format type
 #[derive(Ord, PartialOrd, Eq, PartialEq, Copy, Clone, Debug, Default, Encode, Decode)]
-#[cfg_attr(feature = "std", derive(Serialize))]
+#[cfg_attr(feature = "std", derive(Serialize, Deserialize))]
 pub struct Address {
     /// The type of the address.
     pub kind: Type,

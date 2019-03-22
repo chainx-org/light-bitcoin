@@ -13,7 +13,7 @@ use serialization::{
 use rustc_hex::FromHex;
 
 #[cfg(feature = "std")]
-use serde_derive::Serialize;
+use serde_derive::{Deserialize, Serialize};
 
 use super::constants::{LOCKTIME_THRESHOLD, SEQUENCE_FINAL};
 
@@ -23,7 +23,7 @@ const WITNESS_MARKER: u8 = 0;
 const WITNESS_FLAG: u8 = 1;
 
 #[derive(Ord, PartialOrd, PartialEq, Eq, Copy, Clone, Debug, Default)]
-#[cfg_attr(feature = "std", derive(Serialize))]
+#[cfg_attr(feature = "std", derive(Serialize, Deserialize))]
 pub struct OutPoint {
     pub hash: H256,
     pub index: u32,
@@ -62,7 +62,7 @@ impl Deserializable for OutPoint {
 }
 
 #[derive(Ord, PartialOrd, Eq, PartialEq, Clone, Debug, Default)]
-#[cfg_attr(feature = "std", derive(Serialize))]
+#[cfg_attr(feature = "std", derive(Serialize, Deserialize))]
 pub struct TransactionInput {
     pub previous_output: OutPoint,
     pub script_sig: Bytes,
@@ -114,7 +114,7 @@ impl Deserializable for TransactionInput {
 }
 
 #[derive(Ord, PartialOrd, Eq, PartialEq, Clone, Debug)]
-#[cfg_attr(feature = "std", derive(Serialize))]
+#[cfg_attr(feature = "std", derive(Serialize, Deserialize))]
 pub struct TransactionOutput {
     pub value: u64,
     pub script_pubkey: Bytes,
@@ -149,7 +149,7 @@ impl Deserializable for TransactionOutput {
 }
 
 #[derive(Ord, PartialOrd, Eq, PartialEq, Clone, Debug, Default)]
-#[cfg_attr(feature = "std", derive(Serialize))]
+#[cfg_attr(feature = "std", derive(Serialize, Deserialize))]
 pub struct Transaction {
     pub version: i32,
     pub inputs: Vec<TransactionInput>,

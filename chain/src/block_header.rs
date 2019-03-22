@@ -7,10 +7,10 @@ use serialization::{deserialize, serialize, Deserializable, Reader, Serializable
 use rustc_hex::FromHex;
 
 #[cfg(feature = "std")]
-use serde_derive::Serialize;
+use serde_derive::{Deserialize, Serialize};
 
 #[derive(Ord, PartialOrd, Eq, PartialEq, Copy, Clone, Default)]
-#[cfg_attr(feature = "std", derive(Serialize))]
+#[cfg_attr(feature = "std", derive(Serialize, Deserialize))]
 pub struct BlockHeader {
     pub version: u32,
     pub previous_header_hash: H256,

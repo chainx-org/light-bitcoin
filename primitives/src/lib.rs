@@ -7,7 +7,7 @@ pub mod io;
 use ustd::vec::Vec;
 
 use fixed_hash::construct_fixed_hash;
-pub use primitive_types::*;
+pub use primitive_types::{H160, H256, H512, U128, U256, U512};
 use rustc_hex::FromHex;
 
 pub use self::bytes::{Bytes, TaggedBytes};
