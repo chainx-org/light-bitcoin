@@ -521,7 +521,8 @@ impl Script {
 
     // ============================================================================================
     // Added method
-    pub fn parse_redeem_script(&self) -> Option<(Vec<Bytes>, u32, u32)> { // get Vec<public> , m , n
+    pub fn parse_redeem_script(&self) -> Option<(Vec<Bytes>, u32, u32)> {
+        // get Vec<public> , m , n
         if self.data.len() < 3 {
             return None;
         }
@@ -555,13 +556,12 @@ impl Script {
             };
 
             match instruction.opcode {
-                Opcode::OP_PUSHBYTES_33 |
-                Opcode::OP_PUSHBYTES_65 => {},
+                Opcode::OP_PUSHBYTES_33 | Opcode::OP_PUSHBYTES_65 => {}
                 _ => return None,
             }
-            let data = instruction.data.expect(
-                "this method depends on previous check in script_type()",
-            );
+            let data = instruction
+                .data
+                .expect("this method depends on previous check in script_type()");
             pubkeys.push(data.into());
 
             pc += instruction.step;
@@ -607,12 +607,12 @@ impl Script {
         let mut pc = 1;
         let mut vec: Vec<Bytes> = Vec::new();
         while pc < self.len() - 2 {
-            let instruction = self.get_instruction(pc).expect(
-                "this method depends on previous check in script_type()",
-            );
-            let data = instruction.data.expect(
-                "this method depends on previous check in script_type()",
-            );
+            let instruction = self
+                .get_instruction(pc)
+                .expect("this method depends on previous check in script_type()");
+            let data = instruction
+                .data
+                .expect("this method depends on previous check in script_type()");
             vec.push(data.into());
             pc += instruction.step;
         }
