@@ -4,7 +4,7 @@ mod bytes;
 mod compact;
 pub mod io;
 
-pub use primitive_types::{H32, H48, H160, H256, H264, H512, U128, U256, U512, H520};
+pub use primitive_types::{H160, H256, H264, H32, H48, H512, H520, U128, U256, U512};
 
 pub use self::bytes::{Bytes, TaggedBytes};
 pub use self::compact::Compact;
