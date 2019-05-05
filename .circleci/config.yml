@@ -55,22 +55,22 @@ jobs:
           name: Coverage
           command: |
             # install kcov
-            export KCOV_VERSION=36
-            wget https://github.com/SimonKagstrom/kcov/archive/v$KCOV_VERSION.tar.gz
-            tar xzf v$KCOV_VERSION.tar.gz && rm v$KCOV_VERSION.tar.gz
-            cd kcov-$KCOV_VERSION
-            mkdir build && cd build
-            cmake .. && make && make install DESTDIR=../../kcov-build
-            cd ../.. && rm -rf kcov-$KCOV_VERSION
+            #export KCOV_VERSION=36
+            #wget https://github.com/SimonKagstrom/kcov/archive/v$KCOV_VERSION.tar.gz
+            #tar xzf v$KCOV_VERSION.tar.gz && rm v$KCOV_VERSION.tar.gz
+            #cd kcov-$KCOV_VERSION
+            #mkdir build && cd build
+            #cmake .. && make && make install DESTDIR=../../kcov-build
+            #cd ../.. && rm -rf kcov-$KCOV_VERSION
 
             # generate and upload code coverage
-            for file in $(find target/debug -maxdepth 1 -name '*-*' -a ! -name '*.d' ! -name '.*'); do
-              [ -x "${file}" ] || continue
-              mkdir -p "target/cov/$(basename $file)"
-              sudo ./kcov-build/usr/local/bin/kcov --exclude-pattern=/.cargo,/usr/lib --verify "target/cov/$(basename $file)" "$file"
-            done
-            bash <(curl -s https://codecov.io/bash)
-            echo "Uploaded code coverage"
+            #for file in $(find target/debug -maxdepth 1 -name '*-*' -a ! -name '*.d' ! -name '.*'); do
+            #  [ -x "${file}" ] || continue
+            #  mkdir -p "target/cov/$(basename $file)"
+            #  sudo ./kcov-build/usr/local/bin/kcov --exclude-pattern=/.cargo,/usr/lib --verify "target/cov/$(basename $file)" "$file"
+            #done
+            #bash <(curl -s https://codecov.io/bash)
+            #echo "Uploaded code coverage"
 
 workflows:
   version: 2.1
