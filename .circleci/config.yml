@@ -13,7 +13,7 @@ jobs:
           name: Setup build environment
           command: |
             apt update
-            apt install -y curl wget build-essential zlib1g-dev python libcurl4-openssl-dev libelf-dev libdw-dev cmake binutils-dev libiberty-dev
+            apt install -y sudo curl wget build-essential zlib1g-dev python libcurl4-openssl-dev libelf-dev libdw-dev cmake binutils-dev libiberty-dev
             curl https://sh.rustup.rs -sSf | sh -s -- --no-modify-path --default-toolchain none -y;
             source $HOME/.cargo/env
           no_output_timeout: 1800s
