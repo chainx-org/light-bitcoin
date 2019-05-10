@@ -120,9 +120,13 @@ impl Encode for PartialMerkleTree {
 
 impl Decode for PartialMerkleTree {
     fn decode<I: Input>(input: &mut I) -> Option<Self> {
-        let value: Vec<u8> = Decode::decode(input).unwrap();
-        if let Ok(tree) = deserialize(Reader::new(&value)) {
-            Some(tree)
+        let value: Option<Vec<u8>> = Decode::decode(input);
+        if let Some(value) = value {
+            if let Ok(tree) = deserialize(Reader::new(&value)) {
+                Some(tree)
+            } else {
+                None
+            }
         } else {
             None
         }
