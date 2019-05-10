@@ -358,34 +358,85 @@ mod tests {
             dhash256(&values[2].as_bytes()),
             dhash256(&values[3].as_bytes()),
         ];
-        let tree = PartialMerkleTree::build(hashes, BitVec::from_elem(4, true))
-            .parse()
-            .unwrap();
-        //        println!("tree: {:?}", tree);
+        let tree = PartialMerkleTree::build(hashes, BitVec::from_elem(4, true));
+
+        let mut s = Stream::new();
+        tree.serialize(&mut s);
+        let bytes = s.out();
+        println!("Serialize tree: {:?}", bytes);
+        let mut r = Reader::new(bytes.as_slice());
+        let deserialize: PartialMerkleTree = Deserializable::deserialize(&mut r).unwrap();
+//        assert_eq!(tree, deserialize);
+        let encode = tree.encode();
+        println!("Encode tree: {:?}", encode);
+        let decode: PartialMerkleTree = Decode::decode(&mut encode.as_slice()).unwrap();
+//        assert_eq!(tree, decode);
+
+        let parsed_tree = tree.parse().unwrap();
+        println!("Parsed tree: {:?}", parsed_tree);
 
         let h01 = vec![
             dhash256(&values[0].as_bytes()),
             dhash256(&values[1].as_bytes()),
         ];
-        let tree01 = PartialMerkleTree::build(h01, BitVec::from_elem(2, true))
-            .parse()
-            .unwrap();
-        //        println!("tree01: {:?}", tree01);
+        let tree01 = PartialMerkleTree::build(h01, BitVec::from_elem(2, true));
+
+        let mut s = Stream::new();
+        tree01.serialize(&mut s);
+        let bytes = s.out();
+        println!("Serialize tree01: {:?}", bytes);
+        let mut r = Reader::new(bytes.as_slice());
+        let deserialize: PartialMerkleTree = Deserializable::deserialize(&mut r).unwrap();
+//        assert_eq!(tree01, deserialize);
+        let encode = tree01.encode();
+        println!("Encode tree01: {:?}", encode);
+        let decode: PartialMerkleTree = Decode::decode(&mut encode.as_slice()).unwrap();
+//        assert_eq!(tree01, decode);
+
+        let parsed_tree01 = tree01.parse().unwrap();
+        println!("Parsed tree01: {:?}", parsed_tree01);
 
         let h23 = vec![
             dhash256(&values[2].as_bytes()),
             dhash256(&values[3].as_bytes()),
         ];
-        let tree23 = PartialMerkleTree::build(h23, BitVec::from_elem(2, true))
-            .parse()
-            .unwrap();
-        //        println!("tree23: {:?}", tree23);
+        let tree23 = PartialMerkleTree::build(h23, BitVec::from_elem(2, true));
 
-        let tree0123 =
-            PartialMerkleTree::build(vec![tree01.root, tree23.root], BitVec::from_elem(2, true))
-                .parse()
-                .unwrap();
-        //        println!("tree0123: {:?}", tree0123);
-        assert_eq!(tree.root, tree0123.root);
+        let mut s = Stream::new();
+        tree23.serialize(&mut s);
+        let bytes = s.out();
+        println!("Serialize tree23: {:?}", bytes);
+        let mut r = Reader::new(bytes.as_slice());
+        let deserialize: PartialMerkleTree = Deserializable::deserialize(&mut r).unwrap();
+//        assert_eq!(tree23, deserialize);
+        let encode = tree23.encode();
+        println!("Encode tree23: {:?}", encode);
+        let decode: PartialMerkleTree = Decode::decode(&mut encode.as_slice()).unwrap();
+//        assert_eq!(tree23, decode);
+
+        let parsed_tree23 = tree23.parse().unwrap();
+        println!("Parsed tree23: {:?}", parsed_tree23);
+
+        let tree0123 = PartialMerkleTree::build(
+            vec![parsed_tree01.root, parsed_tree23.root],
+            BitVec::from_elem(2, true),
+        );
+
+        let mut s = Stream::new();
+        tree0123.serialize(&mut s);
+        let bytes = s.out();
+        println!("Serialize tree0123: {:?}", bytes);
+        let mut r = Reader::new(bytes.as_slice());
+        let deserialize: PartialMerkleTree = Deserializable::deserialize(&mut r).unwrap();
+//        assert_eq!(tree0123, deserialize);
+        let encode = tree0123.encode();
+        println!("Encode tree0123: {:?}", encode);
+        let decode: PartialMerkleTree = Decode::decode(&mut encode.as_slice()).unwrap();
+//        assert_eq!(tree0123, decode);
+
+        let parsed_tree0123 = tree0123.parse().unwrap();
+        println!("Parsed tree0123: {:?}", parsed_tree0123);
+
+        assert_eq!(parsed_tree.root, parsed_tree0123.root);
     }
 }
