@@ -8,7 +8,9 @@ use chain::merkle_node_hash;
 use primitives::{io, H256};
 use serialization::{deserialize, serialize, Deserializable, Reader, Serializable, Stream};
 
-pub use bit_vec::BitVec;
+//pub use bit_vec::BitVec;
+pub use bitvec::vec::BitVec;
+use bitvec::bitvec;
 use parity_codec::{Decode, Encode, Input};
 
 #[derive(Debug)]
@@ -21,7 +23,7 @@ pub enum Error {
 }
 
 /// Partial merkle tree
-#[derive(PartialEq, Clone)]
+#[derive(Clone)]
 #[cfg_attr(feature = "std", derive(Debug))]
 pub struct PartialMerkleTree {
     /// Total number of transactions
@@ -30,6 +32,13 @@ pub struct PartialMerkleTree {
     pub hashes: Vec<H256>,
     /// Match flags
     pub flags: BitVec,
+}
+
+impl cmp::PartialEq for PartialMerkleTree {
+    #[inline]
+    fn eq(&self, other: &Self) -> bool {
+        self.tx_count == other.tx_count && self.hashes == other.hashes && self.flags == other.flags
+    }
 }
 
 impl PartialMerkleTree {
@@ -55,6 +64,40 @@ impl PartialMerkleTree {
 
 impl Serializable for PartialMerkleTree {
     fn serialize(&self, stream: &mut Stream) {
+//        println!("Serializable flags before converting endian: {:?} (len = {:?})", self.flags, self.flags.len());
+//        let flags_bytes = self
+//            .flags
+//            .to_bytes()
+//            .iter()
+//            .map(|b| {
+//                ((b & 0b1000_0000) >> 7)
+//                    | ((b & 0b0100_0000) >> 5)
+//                    | ((b & 0b0010_0000) >> 3)
+//                    | ((b & 0b0001_0000) >> 1)
+//                    | ((b & 0b0000_1000) << 1)
+//                    | ((b & 0b0000_0100) << 3)
+//                    | ((b & 0b0000_0010) << 5)
+//                    | ((b & 0b0000_0001) << 7)
+//            })
+//            .collect::<Vec<u8>>();
+//        println!("Serializable flags after converting endian: {:?} (len = {:?})", flags_bytes, flags_bytes.len());
+        println!("Serializable flags before converting endian: {:?} (len = {:?})", self.flags, self.flags.len());
+        let flags_bytes = self
+            .flags
+            .as_slice()
+            .iter()
+            .map(|b| {
+                ((b & 0b1000_0000) >> 7)
+                    | ((b & 0b0100_0000) >> 5)
+                    | ((b & 0b0010_0000) >> 3)
+                    | ((b & 0b0001_0000) >> 1)
+                    | ((b & 0b0000_1000) << 1)
+                    | ((b & 0b0000_0100) << 3)
+                    | ((b & 0b0000_0010) << 5)
+                    | ((b & 0b0000_0001) << 7)
+            })
+            .collect::<Vec<u8>>();
+        println!("Serializable flags after converting endian: {:?} (len = {:?})", flags_bytes, flags_bytes.len());
         stream
             .append(&self.tx_count)
             .append_list(&self.hashes)
@@ -63,7 +106,7 @@ impl Serializable for PartialMerkleTree {
             .append_list(
                 &self
                     .flags
-                    .to_bytes()
+                    .as_slice()
                     .into_iter()
                     .map(|b| {
                         ((b & 0b1000_0000) >> 7)
@@ -91,21 +134,39 @@ impl Deserializable for PartialMerkleTree {
             hashes: reader.read_list()?,
             flags: {
                 let flags_bytes: Vec<u8> = reader.read_list()?;
-                BitVec::from_bytes(
-                    &(flags_bytes
-                        .into_iter()
-                        .map(|b| {
-                            ((b & 0b1000_0000) >> 7)
-                                | ((b & 0b0100_0000) >> 5)
-                                | ((b & 0b0010_0000) >> 3)
-                                | ((b & 0b0001_0000) >> 1)
-                                | ((b & 0b0000_1000) << 1)
-                                | ((b & 0b0000_0100) << 3)
-                                | ((b & 0b0000_0010) << 5)
-                                | ((b & 0b0000_0001) << 7)
-                        })
-                        .collect::<Vec<u8>>()),
-                )
+                println!("Deserializable flags after converting endian: {:?} (len = {:?})", flags_bytes, flags_bytes.len());
+                let flags_bytes = flags_bytes
+                    .iter()
+                    .map(|b| {
+                        ((b & 0b1000_0000) >> 7)
+                            | ((b & 0b0100_0000) >> 5)
+                            | ((b & 0b0010_0000) >> 3)
+                            | ((b & 0b0001_0000) >> 1)
+                            | ((b & 0b0000_1000) << 1)
+                            | ((b & 0b0000_0100) << 3)
+                            | ((b & 0b0000_0010) << 5)
+                            | ((b & 0b0000_0001) << 7)
+                    })
+                    .collect::<Vec<u8>>();
+                println!("Deserializable flags before converting endian: {:?} (len = {:?})", flags_bytes, flags_bytes.len());
+//                let bitvec = BitVec::from_bytes(
+//                    &(flags_bytes
+//                        .into_iter()
+//                        .map(|b| {
+//                            ((b & 0b1000_0000) >> 7)
+//                                | ((b & 0b0100_0000) >> 5)
+//                                | ((b & 0b0010_0000) >> 3)
+//                                | ((b & 0b0001_0000) >> 1)
+//                                | ((b & 0b0000_1000) << 1)
+//                                | ((b & 0b0000_0100) << 3)
+//                                | ((b & 0b0000_0010) << 5)
+//                                | ((b & 0b0000_0001) << 7)
+//                        })
+//                        .collect::<Vec<u8>>()),
+//                );
+                let bitvec = BitVec::from(flags_bytes);
+                println!("{:?} (len = {:?})", bitvec, bitvec.len());
+                bitvec
             },
         })
     }
@@ -220,7 +281,8 @@ impl PartialMerkleTreeBuilder {
         let mut partial_merkle_tree = PartialMerkleTreeBuilder {
             all_len: tree.tx_count,
             all_hashes: Vec::new(),
-            all_matches: BitVec::from_elem(tree.tx_count as usize, false),
+//            all_matches: BitVec::from_elem(tree.tx_count as usize, false),
+            all_matches: BitVec::from(vec![false; tree.tx_count as usize].as_slice()),
             hashes: tree.hashes,
             matches: tree.flags,
         };
@@ -362,19 +424,23 @@ mod tests {
             dhash256(&values[2].as_bytes()),
             dhash256(&values[3].as_bytes()),
         ];
-        let tree = PartialMerkleTree::build(hashes, BitVec::from_elem(4, true));
-
+//        let tree = PartialMerkleTree::build(hashes, BitVec::from_elem(4, true));
+        let tree = PartialMerkleTree::build(hashes, bitvec![1, 1, 1, 1]);
+//        println!("bitvec: {:?}", BitVec::from(vec![true; 4].as_slice()));
+        println!("Origin: {:?}", tree);
         let mut s = Stream::new();
         tree.serialize(&mut s);
         let bytes = s.out();
         println!("Serialize tree: {:?}", bytes);
         let mut r = Reader::new(bytes.as_slice());
         let deserialize: PartialMerkleTree = Deserializable::deserialize(&mut r).unwrap();
-//        assert_eq!(tree, deserialize);
+        assert_eq!(tree.tx_count, deserialize.tx_count);
+        assert_eq!(tree.hashes, deserialize.hashes);
+        assert_eq!(tree.flags, deserialize.flags);
         let encode = tree.encode();
         println!("Encode tree: {:?}", encode);
         let decode: PartialMerkleTree = Decode::decode(&mut encode.as_slice()).unwrap();
-//        assert_eq!(tree, decode);
+        //        assert_eq!(tree, decode);
 
         let parsed_tree = tree.parse().unwrap();
         println!("Parsed tree: {:?}", parsed_tree);
@@ -383,7 +449,8 @@ mod tests {
             dhash256(&values[0].as_bytes()),
             dhash256(&values[1].as_bytes()),
         ];
-        let tree01 = PartialMerkleTree::build(h01, BitVec::from_elem(2, true));
+//        let tree01 = PartialMerkleTree::build(h01, BitVec::from_elem(2, true));
+        let tree01 = PartialMerkleTree::build(h01, bitvec![1, 1]);
 
         let mut s = Stream::new();
         tree01.serialize(&mut s);
@@ -391,11 +458,11 @@ mod tests {
         println!("Serialize tree01: {:?}", bytes);
         let mut r = Reader::new(bytes.as_slice());
         let deserialize: PartialMerkleTree = Deserializable::deserialize(&mut r).unwrap();
-//        assert_eq!(tree01, deserialize);
+        //        assert_eq!(tree01, deserialize);
         let encode = tree01.encode();
         println!("Encode tree01: {:?}", encode);
         let decode: PartialMerkleTree = Decode::decode(&mut encode.as_slice()).unwrap();
-//        assert_eq!(tree01, decode);
+        //        assert_eq!(tree01, decode);
 
         let parsed_tree01 = tree01.parse().unwrap();
         println!("Parsed tree01: {:?}", parsed_tree01);
@@ -404,7 +471,8 @@ mod tests {
             dhash256(&values[2].as_bytes()),
             dhash256(&values[3].as_bytes()),
         ];
-        let tree23 = PartialMerkleTree::build(h23, BitVec::from_elem(2, true));
+//        let tree23 = PartialMerkleTree::build(h23, BitVec::from_elem(2, true));
+        let tree23 = PartialMerkleTree::build(h23, bitvec![1, 1]);
 
         let mut s = Stream::new();
         tree23.serialize(&mut s);
@@ -412,18 +480,22 @@ mod tests {
         println!("Serialize tree23: {:?}", bytes);
         let mut r = Reader::new(bytes.as_slice());
         let deserialize: PartialMerkleTree = Deserializable::deserialize(&mut r).unwrap();
-//        assert_eq!(tree23, deserialize);
+        //        assert_eq!(tree23, deserialize);
         let encode = tree23.encode();
         println!("Encode tree23: {:?}", encode);
         let decode: PartialMerkleTree = Decode::decode(&mut encode.as_slice()).unwrap();
-//        assert_eq!(tree23, decode);
+        //        assert_eq!(tree23, decode);
 
         let parsed_tree23 = tree23.parse().unwrap();
         println!("Parsed tree23: {:?}", parsed_tree23);
 
+//        let tree0123 = PartialMerkleTree::build(
+//            vec![parsed_tree01.root, parsed_tree23.root],
+//            BitVec::from_elem(2, true),
+//        );
         let tree0123 = PartialMerkleTree::build(
             vec![parsed_tree01.root, parsed_tree23.root],
-            BitVec::from_elem(2, true),
+            bitvec![1, 1],
         );
 
         let mut s = Stream::new();
@@ -432,11 +504,11 @@ mod tests {
         println!("Serialize tree0123: {:?}", bytes);
         let mut r = Reader::new(bytes.as_slice());
         let deserialize: PartialMerkleTree = Deserializable::deserialize(&mut r).unwrap();
-//        assert_eq!(tree0123, deserialize);
+        //        assert_eq!(tree0123, deserialize);
         let encode = tree0123.encode();
         println!("Encode tree0123: {:?}", encode);
         let decode: PartialMerkleTree = Decode::decode(&mut encode.as_slice()).unwrap();
-//        assert_eq!(tree0123, decode);
+        //        assert_eq!(tree0123, decode);
 
         let parsed_tree0123 = tree0123.parse().unwrap();
         println!("Parsed tree0123: {:?}", parsed_tree0123);

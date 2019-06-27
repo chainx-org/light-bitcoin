@@ -9,7 +9,7 @@ ustd = { git = "https://github.com/chainx-org/chainx-common", default-features =
 primitives = { path = "../primitives", default-features = false }
 serialization = { path = "../serialization", default-features = false }
 chain = { path = "../chain", default-features = false }
-bitvec = { version = "0.10", default-features = false }
+bitvec = { version = "0.11", default-features = false, features = ["alloc"] }
 bit-vec = { git = "https://github.com/koushiro/bit-vec", branch = "work", default-features = false }
 parity-codec = { version = "3.5.1", default-features = false }
 
