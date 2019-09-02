@@ -2,7 +2,15 @@
 
 #![cfg_attr(not(feature = "std"), no_std)]
 
-use ustd::{cmp, prelude::*};
+#[cfg(not(feature = "std"))]
+extern crate alloc;
+
+#[cfg(feature = "std")]
+use std::cmp;
+#[cfg(not(feature = "std"))]
+use core::cmp;
+#[cfg(not(feature = "std"))]
+use alloc::{vec, vec::Vec};
 
 use chain::merkle_node_hash;
 use primitives::{io, H256};
@@ -10,7 +18,6 @@ use serialization::{deserialize, serialize, Deserializable, Reader, Serializable
 
 //pub use bit_vec::BitVec;
 pub use bitvec::vec::BitVec;
-use bitvec::bitvec;
 use parity_codec::{Decode, Encode, Input};
 
 #[derive(Debug)]
@@ -23,7 +30,7 @@ pub enum Error {
 }
 
 /// Partial merkle tree
-#[derive(Clone)]
+#[derive(PartialEq, Clone)]
 #[cfg_attr(feature = "std", derive(Debug))]
 pub struct PartialMerkleTree {
     /// Total number of transactions
@@ -32,13 +39,6 @@ pub struct PartialMerkleTree {
     pub hashes: Vec<H256>,
     /// Match flags
     pub flags: BitVec,
-}
-
-impl cmp::PartialEq for PartialMerkleTree {
-    #[inline]
-    fn eq(&self, other: &Self) -> bool {
-        self.tx_count == other.tx_count && self.hashes == other.hashes && self.flags == other.flags
-    }
 }
 
 impl PartialMerkleTree {
@@ -81,23 +81,23 @@ impl Serializable for PartialMerkleTree {
 //            })
 //            .collect::<Vec<u8>>();
 //        println!("Serializable flags after converting endian: {:?} (len = {:?})", flags_bytes, flags_bytes.len());
-        println!("Serializable flags before converting endian: {:?} (len = {:?})", self.flags, self.flags.len());
-        let flags_bytes = self
-            .flags
-            .as_slice()
-            .iter()
-            .map(|b| {
-                ((b & 0b1000_0000) >> 7)
-                    | ((b & 0b0100_0000) >> 5)
-                    | ((b & 0b0010_0000) >> 3)
-                    | ((b & 0b0001_0000) >> 1)
-                    | ((b & 0b0000_1000) << 1)
-                    | ((b & 0b0000_0100) << 3)
-                    | ((b & 0b0000_0010) << 5)
-                    | ((b & 0b0000_0001) << 7)
-            })
-            .collect::<Vec<u8>>();
-        println!("Serializable flags after converting endian: {:?} (len = {:?})", flags_bytes, flags_bytes.len());
+//        println!("Serializable flags before converting endian: {:?} (len = {:?})", self.flags, self.flags.len());
+//        let flags_bytes = self
+//            .flags
+//            .as_slice()
+//            .iter()
+//            .map(|b| {
+//                ((b & 0b1000_0000) >> 7)
+//                    | ((b & 0b0100_0000) >> 5)
+//                    | ((b & 0b0010_0000) >> 3)
+//                    | ((b & 0b0001_0000) >> 1)
+//                    | ((b & 0b0000_1000) << 1)
+//                    | ((b & 0b0000_0100) << 3)
+//                    | ((b & 0b0000_0010) << 5)
+//                    | ((b & 0b0000_0001) << 7)
+//            })
+//            .collect::<Vec<u8>>();
+//        println!("Serializable flags after converting endian: {:?} (len = {:?})", flags_bytes, flags_bytes.len());
         stream
             .append(&self.tx_count)
             .append_list(&self.hashes)
@@ -134,7 +134,7 @@ impl Deserializable for PartialMerkleTree {
             hashes: reader.read_list()?,
             flags: {
                 let flags_bytes: Vec<u8> = reader.read_list()?;
-                println!("Deserializable flags after converting endian: {:?} (len = {:?})", flags_bytes, flags_bytes.len());
+//                println!("Deserializable flags after converting endian: {:?} (len = {:?})", flags_bytes, flags_bytes.len());
                 let flags_bytes = flags_bytes
                     .iter()
                     .map(|b| {
@@ -148,7 +148,7 @@ impl Deserializable for PartialMerkleTree {
                             | ((b & 0b0000_0001) << 7)
                     })
                     .collect::<Vec<u8>>();
-                println!("Deserializable flags before converting endian: {:?} (len = {:?})", flags_bytes, flags_bytes.len());
+//                println!("Deserializable flags before converting endian: {:?} (len = {:?})", flags_bytes, flags_bytes.len());
 //                let bitvec = BitVec::from_bytes(
 //                    &(flags_bytes
 //                        .into_iter()
@@ -165,7 +165,7 @@ impl Deserializable for PartialMerkleTree {
 //                        .collect::<Vec<u8>>()),
 //                );
                 let bitvec = BitVec::from(flags_bytes);
-                println!("{:?} (len = {:?})", bitvec, bitvec.len());
+//                println!("{:?} (len = {:?})", bitvec, bitvec.len());
                 bitvec
             },
         })
@@ -413,6 +413,7 @@ impl PartialMerkleTreeBuilder {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use bitvec::bitvec;
     use crypto::dhash256;
 
     #[test]

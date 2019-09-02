@@ -5,13 +5,12 @@ authors = ["Chainpool <http://chainx.org>"]
 edition = "2018"
 
 [dependencies]
-ustd = { git = "https://github.com/chainx-org/chainx-common", default-features = false }
 primitives = { path = "../primitives", default-features = false }
 serialization = { path = "../serialization", default-features = false }
 chain = { path = "../chain", default-features = false }
-bitvec = { version = "0.11", default-features = false, features = ["alloc"] }
-bit-vec = { git = "https://github.com/koushiro/bit-vec", branch = "work", default-features = false }
-parity-codec = { version = "3.5.1", default-features = false }
+bitvec = { version = "0.15", default-features = false, features = ["alloc"] }
+#bit-vec = { git = "https://github.com/koushiro/bit-vec", branch = "work", default-features = false }
+parity-codec = { version = "3.5", default-features = false }
 
 [dev-dependencies]
 crypto = { path = "../crypto", default-features = false }
@@ -19,11 +18,10 @@ crypto = { path = "../crypto", default-features = false }
 [features]
 default = ["std"]
 std = [
-     "ustd/std",
      "primitives/std",
      "serialization/std",
      "chain/std",
      "bitvec/std",
-     "bit-vec/std",
+#     "bit-vec/std",
      "parity-codec/std",
 ]
