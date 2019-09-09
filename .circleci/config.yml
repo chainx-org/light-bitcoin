@@ -33,8 +33,7 @@ jobs:
             export RUST_BACKTRACE=1
 
             # test std
-            cargo test --all --exclude serialization_derive
-            cd serialization_derive && cargo test --test raw && cd ..
+            cargo test --all
 
             # test no_std
             cd primitives && cargo test --no-default-features --features codec && cd ..
