@@ -37,7 +37,7 @@ jobs:
             cd serialization_derive && cargo test --test raw && cd ..
 
             # test no_std
-            cd primitives && cargo test --no-default-features && cd ..
+            cd primitives && cargo test --no-default-features --features codec && cd ..
             cd serialization && cargo test --no-default-features && cd ..
             cd crypto && cargo test --no-default-features && cd ..
             cd keys && cargo test --no-default-features && cd ..
