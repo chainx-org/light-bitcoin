@@ -11,7 +11,7 @@ jobs:
           name: Setup build environment
           command: |
             sudo apt-get update
-            sudo apt-get install -y cmake binutils-dev libiberty-dev libelf-dev libdw-dev
+            sudo apt-get install -y cmake binutils-dev libcurl4-openssl-dev libiberty-dev libelf-dev libdw-dev
             curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- --no-modify-path --default-toolchain none -y;
           no_output_timeout: 1800s
       - run:
@@ -49,20 +49,10 @@ jobs:
           name: Coverage
           command: |
             # install kcov
-            export KCOV_VERSION=36
-            wget https://github.com/SimonKagstrom/kcov/archive/v$KCOV_VERSION.tar.gz
-            tar xzf v$KCOV_VERSION.tar.gz && rm v$KCOV_VERSION.tar.gz
-            cd kcov-$KCOV_VERSION
-            mkdir build && cd build
-            cmake .. && make && make install DESTDIR=../../kcov-build
-            cd ../.. && rm -rf kcov-$KCOV_VERSION
-
-            # generate and upload code coverage
-            for file in $(find target/debug -maxdepth 1 -name '*-*' -a ! -name '*.d' ! -name '.*'); do
-              [ -x "${file}" ] || continue
-              mkdir -p "target/cov/$(basename $file)"
-              ./kcov-build/usr/local/bin/kcov --exclude-pattern=/.cargo,/usr/lib --verify "target/cov/$(basename $file)" "$file"
-            done
+            cargo install cargo-kcov
+            cargo kcov --print-install-kcov-sh | sh
+            # coverage
+            cargo kcov --all
             bash <(curl -s https://codecov.io/bash)
             echo "Uploaded code coverage"
 
