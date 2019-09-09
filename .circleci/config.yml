@@ -52,10 +52,11 @@ jobs:
             # install kcov
             cargo install cargo-kcov
             cargo kcov --print-install-kcov-sh | sh
+            echo "Install kcov successfully"
             # coverage
             cargo kcov --all
             bash <(curl -s https://codecov.io/bash)
-            echo "Uploaded code coverage"
+            echo "Upload code coverage successfully"
 
 workflows:
   version: 2.1
