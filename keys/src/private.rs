@@ -4,7 +4,6 @@
 use alloc::{vec, vec::Vec};
 use core::{fmt, str};
 
-use base58::{FromBase58, ToBase58};
 use crypto::checksum;
 use primitives::H520;
 
@@ -35,7 +34,7 @@ impl fmt::Debug for Private {
 
 impl fmt::Display for Private {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        self.layout().to_base58().fmt(f)
+        bs58::encode(self.layout().as_slice()).into_string().fmt(f)
     }
 }
 
@@ -46,7 +45,7 @@ impl str::FromStr for Private {
     where
         Self: Sized,
     {
-        let hex = s.from_base58().map_err(|_| Error::InvalidPrivate)?;
+        let hex = bs58::decode(s).into_vec().map_err(|_| Error::InvalidPrivate)?;
         Private::from_layout(&hex)
     }
 }
