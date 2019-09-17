@@ -7,7 +7,6 @@
 
 use core::{fmt, ops, str};
 
-use base58::{FromBase58, ToBase58};
 use crypto::checksum;
 use primitives::io;
 use serialization::{Deserializable, Reader, Serializable, Stream};
@@ -128,7 +127,7 @@ pub struct Address {
 
 impl fmt::Display for Address {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        self.layout().to_base58().fmt(f)
+        bs58::encode(self.layout().0).into_string().fmt(f)
     }
 }
 
@@ -139,7 +138,9 @@ impl str::FromStr for Address {
     where
         Self: Sized,
     {
-        let hex = s.from_base58().map_err(|_| Error::InvalidAddress)?;
+        let hex = bs58::decode(s)
+            .into_vec()
+            .map_err(|_| Error::InvalidAddress)?;
         Address::from_layout(&hex)
     }
 }
