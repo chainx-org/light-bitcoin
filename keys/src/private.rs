@@ -45,7 +45,9 @@ impl str::FromStr for Private {
     where
         Self: Sized,
     {
-        let hex = bs58::decode(s).into_vec().map_err(|_| Error::InvalidPrivate)?;
+        let hex = bs58::decode(s)
+            .into_vec()
+            .map_err(|_| Error::InvalidPrivate)?;
         Private::from_layout(&hex)
     }
 }

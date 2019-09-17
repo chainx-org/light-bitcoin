@@ -138,7 +138,9 @@ impl str::FromStr for Address {
     where
         Self: Sized,
     {
-        let hex = bs58::decode(s).into_vec().map_err(|_| Error::InvalidAddress)?;
+        let hex = bs58::decode(s)
+            .into_vec()
+            .map_err(|_| Error::InvalidAddress)?;
         Address::from_layout(&hex)
     }
 }
