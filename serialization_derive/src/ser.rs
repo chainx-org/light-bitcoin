@@ -10,7 +10,7 @@ pub fn impl_serializable(ast: &syn::DeriveInput) -> proc_macro2::TokenStream {
         syn::Fields::Named(_) | syn::Fields::Unnamed(_) => fields
             .iter()
             .enumerate()
-            .map(|tuple| serialize_field_map(tuple))
+            .map(serialize_field_map)
             .collect::<Vec<_>>(),
         syn::Fields::Unit => panic!("#[derive(Serializable)] is not defined for Unit structs."),
     };
@@ -19,7 +19,7 @@ pub fn impl_serializable(ast: &syn::DeriveInput) -> proc_macro2::TokenStream {
         syn::Fields::Named(_) | syn::Fields::Unnamed(_) => fields
             .iter()
             .enumerate()
-            .map(|tuple| serialize_field_size_map(tuple))
+            .map(serialize_field_size_map)
             .collect::<Vec<_>>(),
         syn::Fields::Unit => panic!("#[derive(Serializable)] is not defined for Unit structs."),
     };
