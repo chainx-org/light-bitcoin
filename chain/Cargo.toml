@@ -10,7 +10,7 @@ serialization = { path = "../serialization", default-features = false }
 crypto = { path = "../crypto", default-features = false }
 
 rustc-hex = { version = "2.0", default-features = false }
-parity-codec = { version = "3.5", default-features = false, features = ["derive"] }
+codec = { package = "parity-scale-codec", version = "1.0", default-features = false, features = ["derive"] }
 serde = { version = "1.0", features = ["derive"], optional = true }
 
 [features]
@@ -21,6 +21,6 @@ std = [
     "crypto/std",
     "rustc-hex/std",
 
-    "parity-codec/std",
+    "codec/std",
     "serde",
 ]

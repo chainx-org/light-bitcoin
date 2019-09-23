@@ -83,25 +83,17 @@ impl Deserializable for BlockHeader {
     }
 }
 
-impl parity_codec::Encode for BlockHeader {
+impl codec::Encode for BlockHeader {
     fn encode(&self) -> Vec<u8> {
         let value = serialize::<BlockHeader>(&self);
         value.encode()
     }
 }
 
-impl parity_codec::Decode for BlockHeader {
-    fn decode<I: parity_codec::Input>(value: &mut I) -> Option<Self> {
-        let value: Option<Vec<u8>> = parity_codec::Decode::decode(value);
-        if let Some(value) = value {
-            if let Ok(header) = deserialize(Reader::new(&value)) {
-                Some(header)
-            } else {
-                None
-            }
-        } else {
-            None
-        }
+impl codec::Decode for BlockHeader {
+    fn decode<I: codec::Input>(value: &mut I) -> Result<Self, codec::Error> {
+        let value: Vec<u8> = codec::Decode::decode(value)?;
+        deserialize(Reader::new(&value)).map_err(|_| "Deserialize BlockHeader error".into())
     }
 }
 

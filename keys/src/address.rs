@@ -11,7 +11,7 @@ use crypto::checksum;
 use primitives::io;
 use serialization::{Deserializable, Reader, Serializable, Stream};
 
-use parity_codec::{Decode, Encode};
+use codec::{Decode, Encode};
 #[cfg(feature = "std")]
 use serde::{Deserialize, Serialize};
 

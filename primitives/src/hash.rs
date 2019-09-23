@@ -2,7 +2,7 @@ pub use primitive_types::{H160, H256, H512};
 
 use fixed_hash::construct_fixed_hash;
 #[cfg(feature = "impl-codec")]
-use impl_codec::{impl_fixed_hash_codec, impl_fixed_hash_codec_ext};
+use impl_codec::impl_fixed_hash_codec;
 #[cfg(feature = "impl-serde")]
 use impl_serde::impl_fixed_hash_serde;
 
@@ -33,6 +33,6 @@ mod codec_impls {
     use super::*;
 
     impl_fixed_hash_codec!(H32, 4);
-    impl_fixed_hash_codec_ext!(H264);
-    impl_fixed_hash_codec_ext!(H520);
+    impl_fixed_hash_codec!(H264, 33);
+    impl_fixed_hash_codec!(H520, 65);
 }
