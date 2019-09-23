@@ -3,7 +3,7 @@ use core::{fmt, ops};
 use crypto::dhash160;
 use primitives::{H264, H512, H520};
 
-use parity_codec::{Decode, Encode};
+use codec::{Decode, Encode};
 #[cfg(feature = "std")]
 use serde::{Deserialize, Serialize};
 

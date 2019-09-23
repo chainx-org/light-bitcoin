@@ -298,22 +298,18 @@ impl Deserializable for Transaction {
     }
 }
 
-impl parity_codec::Encode for Transaction {
+impl codec::Encode for Transaction {
     fn encode(&self) -> Vec<u8> {
         let value = serialize::<Transaction>(&self);
         value.encode()
     }
 }
 
-impl parity_codec::Decode for Transaction {
-    fn decode<I: parity_codec::Input>(value: &mut I) -> Option<Self> {
-        let value: Option<Vec<u8>> = parity_codec::Decode::decode(value);
+impl codec::Decode for Transaction {
+    fn decode<I: codec::Input>(value: &mut I) -> Option<Self> {
+        let value: Option<Vec<u8>> = codec::Decode::decode(value);
         if let Some(value) = value {
-            if let Ok(tx) = deserialize(Reader::new(&value)) {
-                Some(tx)
-            } else {
-                None
-            }
+            deserialize(Reader::new(&value)).ok()
         } else {
             None
         }
