@@ -1,3 +1,5 @@
+// Reference from https://github.com/rust-bitcoin/rust-bitcoin/blob/master/src/util/merkleblock.rs
+
 #![cfg_attr(not(feature = "std"), no_std)]
 
 #[cfg(not(feature = "std"))]
