@@ -1,3 +1,5 @@
+// Reference from https://github.com/rust-bitcoin/rust-bitcoin/blob/master/src/util/merkleblock.rs
+
 #![cfg_attr(not(feature = "std"), no_std)]
 
 #[cfg(not(feature = "std"))]
@@ -286,7 +288,7 @@ impl codec::Encode for PartialMerkleTree {
 }
 
 impl codec::Decode for PartialMerkleTree {
-    fn decode<I: codec::Input>(input: &mut I) -> Result<Self, codec::Error> {
+    fn decode<I: codec::Input>(input: &mut I) -> core::result::Result<Self, codec::Error> {
         let value: Vec<u8> = codec::Decode::decode(input)?;
         deserialize(Reader::new(&value)).map_err(|_| "Deserialize PartialMerkleTree error".into())
     }
