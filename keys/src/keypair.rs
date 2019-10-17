@@ -141,13 +141,19 @@ mod tests {
         kp.private().sign_compact(&message).unwrap() == signature.into()
     }
 
-    fn check_verify_compact(secret: &'static str, raw_message: &[u8], signature: &'static str) -> bool {
+    fn check_verify_compact(
+        secret: &'static str,
+        raw_message: &[u8],
+        signature: &'static str,
+    ) -> bool {
         let message = dhash256(raw_message);
         let signature: CompactSignature = signature.into();
         let mut raw_signature = [0u8; 64];
         raw_signature.copy_from_slice(&signature[1..65]);
         let kp = KeyPair::from_private(secret.into()).unwrap();
-        kp.public().verify_compact(&message, &raw_signature).unwrap()
+        kp.public()
+            .verify_compact(&message, &raw_signature)
+            .unwrap()
     }
 
     fn check_recover_compact(secret: &'static str, raw_message: &[u8]) -> bool {
