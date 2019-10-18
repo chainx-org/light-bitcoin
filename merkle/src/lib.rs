@@ -41,7 +41,7 @@ pub type Result<T> = core::result::Result<T, Error>;
 #[derive(PartialEq, Eq, Clone)]
 #[cfg_attr(feature = "std", derive(Debug))]
 pub struct PartialMerkleTree {
-    /// THe total number of transactions in the block
+    /// The total number of transactions in the block
     pub tx_count: u32,
     /// Transaction hashes and internal hashes
     pub hashes: Vec<H256>,
@@ -299,13 +299,13 @@ mod tests {
     use std::collections::HashSet;
 
     use chain::{merkle_root, Block, BlockHeader};
-    use primitives::{h256_from_rev_str, io, H256};
+    use primitives::{h256_from_rev_str, H256};
     use rand::prelude::*;
-    use serialization::{deserialize, serialize, Deserializable, Reader, Serializable, Stream};
+    use serialization::{deserialize, serialize, Deserializable, Serializable};
 
     use super::PartialMerkleTree;
 
-    #[derive(PartialEq, Eq, Clone, Debug)]
+    #[derive(PartialEq, Eq, Clone, Debug, Serializable, Deserializable)]
     struct MerkleBlock {
         header: BlockHeader,
         pmt: PartialMerkleTree,
@@ -324,24 +324,6 @@ mod tests {
             }
             let pmt = PartialMerkleTree::from_txids(&hashes, &matches);
             MerkleBlock { header, pmt }
-        }
-    }
-
-    impl Serializable for MerkleBlock {
-        fn serialize(&self, stream: &mut Stream) {
-            stream.append(&self.header).append(&self.pmt);
-        }
-    }
-
-    impl Deserializable for MerkleBlock {
-        fn deserialize<T>(reader: &mut Reader<T>) -> core::result::Result<Self, io::Error>
-        where
-            Self: Sized,
-            T: io::Read,
-        {
-            let header = reader.read()?;
-            let pmt = reader.read()?;
-            Ok(MerkleBlock { header, pmt })
         }
     }
 
@@ -491,6 +473,7 @@ mod tests {
         let txids = txids.into_iter().collect();
 
         let merkle_block = MerkleBlock::from_block(&block, &txids);
+        println!("{:#?}", merkle_block.pmt);
         assert_eq!(merkle_block.header.hash(), block.hash());
 
         let mut matches: Vec<H256> = vec![];
@@ -500,13 +483,14 @@ mod tests {
             .extract_matches(&mut matches, &mut indexes)
             .unwrap();
 
+        println!("{:#?}", matches);
+        println!("{:#?}", indexes);
         assert_eq!(merkle_root, block.block_header.merkle_root_hash);
         assert_eq!(matches.len(), 2);
 
         // Ordered by occurrence in depth-first tree traversal.
         assert_eq!(matches[0], txid2);
         assert_eq!(indexes[0], 1);
-
         assert_eq!(matches[1], txid1);
         assert_eq!(indexes[1], 8);
     }
