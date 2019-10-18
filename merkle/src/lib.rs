@@ -495,7 +495,6 @@ mod tests {
         // Ordered by occurrence in depth-first tree traversal.
         assert_eq!(matches[0], txid2);
         assert_eq!(indexes[0], 1);
-
         assert_eq!(matches[1], txid1);
         assert_eq!(indexes[1], 8);
     }
