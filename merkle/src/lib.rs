@@ -289,17 +289,12 @@ impl codec::Encode for PartialMerkleTree {
 
 impl codec::Decode for PartialMerkleTree {
     fn decode<I: codec::Input>(input: &mut I) -> Option<Self> {
-<<<<<<< HEAD
         let value: Option<Vec<u8>> = codec::Decode::decode(input);
         if let Some(value) = value {
             deserialize(Reader::new(&value)).ok()
         } else {
             None
         }
-=======
-        let value: Vec<u8> = codec::Decode::decode(input).unwrap();
-        deserialize(Reader::new(&value)).ok()
->>>>>>> upstream/master
     }
 }
 
