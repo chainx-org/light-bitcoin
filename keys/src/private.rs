@@ -62,14 +62,14 @@ impl Private {
     pub fn sign(&self, message: &Message) -> Result<Signature, Error> {
         let secret = secp256k1::SecretKey::parse(self.secret.as_fixed_bytes())?;
         let message = secp256k1::Message::parse(message.as_fixed_bytes());
-        let (signature, _recovery_id) = secp256k1::sign(&message, &secret)?;
+        let (signature, _recovery_id) = secp256k1::sign(&message, &secret);
         Ok(signature.serialize_der().as_ref().to_vec().into())
     }
 
     pub fn sign_compact(&self, message: &Message) -> Result<CompactSignature, Error> {
         let secret = secp256k1::SecretKey::parse(self.secret.as_fixed_bytes())?;
         let message = secp256k1::Message::parse(message.as_fixed_bytes());
-        let (signature, recovery_id) = secp256k1::sign(&message, &secret)?;
+        let (signature, recovery_id) = secp256k1::sign(&message, &secret);
         let recovery_id = recovery_id.serialize();
         let data = signature.serialize();
 
@@ -79,7 +79,7 @@ impl Private {
         } else {
             27 + recovery_id
         };
-        compact_signature[1..65].copy_from_slice(&data[0..64]);
+        compact_signature[1..65].copy_from_slice(&data);
         Ok(H520::from_slice(&compact_signature).into())
     }
 }

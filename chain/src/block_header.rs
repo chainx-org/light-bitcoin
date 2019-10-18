@@ -3,14 +3,14 @@ use alloc::vec::Vec;
 use core::fmt;
 
 use crypto::dhash256;
-use primitives::{io, Compact, H256};
-use serialization::{deserialize, serialize, Deserializable, Reader, Serializable, Stream};
+use primitives::{Compact, H256};
+use serialization::{deserialize, serialize, Deserializable, Reader, Serializable};
 
 use rustc_hex::FromHex;
 #[cfg(feature = "std")]
 use serde::{Deserialize, Serialize};
 
-#[derive(Ord, PartialOrd, Eq, PartialEq, Copy, Clone, Default)]
+#[derive(Ord, PartialOrd, Eq, PartialEq, Copy, Clone, Default, Serializable, Deserializable)]
 #[cfg_attr(feature = "std", derive(Serialize, Deserialize))]
 pub struct BlockHeader {
     pub version: u32,
@@ -52,34 +52,6 @@ impl From<&'static str> for BlockHeader {
 impl BlockHeader {
     pub fn hash(&self) -> H256 {
         dhash256(&serialize(self))
-    }
-}
-
-impl Serializable for BlockHeader {
-    fn serialize(&self, stream: &mut Stream) {
-        stream
-            .append(&self.version)
-            .append(&self.previous_header_hash)
-            .append(&self.merkle_root_hash)
-            .append(&self.time)
-            .append(&self.bits)
-            .append(&self.nonce);
-    }
-}
-
-impl Deserializable for BlockHeader {
-    fn deserialize<T>(reader: &mut Reader<T>) -> Result<Self, io::Error>
-    where
-        T: io::Read,
-    {
-        Ok(BlockHeader {
-            version: reader.read()?,
-            previous_header_hash: reader.read()?,
-            merkle_root_hash: reader.read()?,
-            time: reader.read()?,
-            bits: reader.read()?,
-            nonce: reader.read()?,
-        })
     }
 }
 
@@ -154,7 +126,7 @@ mod tests {
 
         assert_eq!(expected, reader.read().unwrap());
         assert_eq!(
-            io::Error::UnexpectedEof,
+            primitives::io::Error::UnexpectedEof,
             reader.read::<BlockHeader>().unwrap_err()
         );
     }
