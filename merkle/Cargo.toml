@@ -21,5 +21,9 @@ std = [
      "primitives/std",
      "serialization/std",
      "chain/std",
+<<<<<<< HEAD
+=======
+     "bit-vec/std",
+>>>>>>> upstream/master
      "codec/std",
 ]
