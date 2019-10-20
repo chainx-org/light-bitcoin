@@ -217,7 +217,7 @@ impl DisplayLayout for Address {
 #[cfg(test)]
 mod tests {
     #[cfg(not(feature = "std"))]
-    use alloc::string::{String, ToString};
+    use alloc::string::ToString;
     use hex_literal::hex;
 
     use super::*;
@@ -232,7 +232,7 @@ mod tests {
 
         assert_eq!(
             address.to_string(),
-            String::from("16meyfSoQV6twkAAxPe51RtMVz7PGRmWna"),
+            "16meyfSoQV6twkAAxPe51RtMVz7PGRmWna".to_string(),
         );
     }
 

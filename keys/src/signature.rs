@@ -119,3 +119,9 @@ impl From<H520> for CompactSignature {
         CompactSignature(h)
     }
 }
+
+impl From<CompactSignature> for H520 {
+    fn from(s: CompactSignature) -> Self {
+        s.0
+    }
+}
