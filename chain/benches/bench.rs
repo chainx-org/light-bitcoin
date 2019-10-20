@@ -2,8 +2,8 @@
 
 extern crate test;
 
-use primitives::{H256, h256_from_rev_str};
 use chain::merkle_root;
+use primitives::{h256_from_rev_str, H256};
 use test::Bencher;
 
 fn prepare_hashes(num: u32) -> Vec<H256> {

@@ -105,7 +105,7 @@ where
         T::deserialize(&mut reader)
     }
 
-    pub fn skip_while(&mut self, predicate: &dyn Fn(u8) -> bool) -> Result<(), Error> {
+    pub fn skip_while(&mut self, predicate: &dyn Fn(u8) -> bool) -> Result<(), io::Error> {
         let mut next_buffer = [0u8];
         loop {
             let next = match self.peeked.take() {
