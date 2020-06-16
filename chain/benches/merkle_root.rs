@@ -16,9 +16,9 @@ fn prepare_hashes(num: u32) -> Vec<H256> {
     );
     for v in 0..num {
         match v % 3 {
-            0 => vec.push(h1.clone()),
-            1 => vec.push(h2.clone()),
-            2 => vec.push(h3.clone()),
+            0 => vec.push(h1),
+            1 => vec.push(h2),
+            2 => vec.push(h3),
             _ => (),
         }
     }
