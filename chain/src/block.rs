@@ -18,6 +18,7 @@ pub struct Block {
     pub transactions: Vec<Transaction>,
 }
 
+// Only for test
 impl From<&'static str> for Block {
     fn from(s: &'static str) -> Self {
         deserialize(&s.from_hex::<Vec<u8>>().unwrap() as &[u8]).unwrap()

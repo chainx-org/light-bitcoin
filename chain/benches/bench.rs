@@ -1,7 +1,4 @@
-#![feature(test)]
-
-extern crate test;
-
+/*
 use chain::merkle_root;
 use primitives::{h256_from_rev_str, H256};
 use test::Bencher;
@@ -33,3 +30,4 @@ fn bench_merkle_root_with_1000_hashes(b: &mut Bencher) {
     let vec = prepare_hashes(1000);
     b.iter(|| merkle_root(&vec));
 }
+*/

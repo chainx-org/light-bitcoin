@@ -12,7 +12,6 @@ use serialization::{
 };
 
 use rustc_hex::FromHex;
-#[cfg(feature = "std")]
 use serde::{Deserialize, Serialize};
 
 use crate::constants::{LOCKTIME_THRESHOLD, SEQUENCE_FINAL};
@@ -24,8 +23,8 @@ const WITNESS_FLAG: u8 = 1;
 
 #[rustfmt::skip]
 #[derive(Ord, PartialOrd, PartialEq, Eq, Copy, Clone, Debug, Default)]
+#[derive(Serialize, Deserialize)]
 #[derive(Serializable, Deserializable)]
-#[cfg_attr(feature = "std", derive(Serialize, Deserialize))]
 pub struct OutPoint {
     pub hash: H256,
     pub index: u32,
@@ -44,8 +43,9 @@ impl OutPoint {
     }
 }
 
+#[rustfmt::skip]
 #[derive(Ord, PartialOrd, Eq, PartialEq, Clone, Debug, Default)]
-#[cfg_attr(feature = "std", derive(Serialize, Deserialize))]
+#[derive(Serialize, Deserialize)]
 pub struct TransactionInput {
     pub previous_output: OutPoint,
     pub script_sig: Bytes,
@@ -98,8 +98,8 @@ impl Deserializable for TransactionInput {
 
 #[rustfmt::skip]
 #[derive(Ord, PartialOrd, Eq, PartialEq, Clone, Debug)]
+#[derive(Serialize, Deserialize)]
 #[derive(Serializable, Deserializable)]
-#[cfg_attr(feature = "std", derive(Serialize, Deserialize))]
 pub struct TransactionOutput {
     pub value: u64,
     pub script_pubkey: Bytes,
@@ -114,8 +114,9 @@ impl Default for TransactionOutput {
     }
 }
 
+#[rustfmt::skip]
 #[derive(Ord, PartialOrd, Eq, PartialEq, Clone, Debug, Default)]
-#[cfg_attr(feature = "std", derive(Serialize, Deserialize))]
+#[derive(Serialize, Deserialize)]
 pub struct Transaction {
     pub version: i32,
     pub inputs: Vec<TransactionInput>,
@@ -123,6 +124,7 @@ pub struct Transaction {
     pub lock_time: u32,
 }
 
+// Only for test
 impl From<&'static str> for Transaction {
     fn from(s: &'static str) -> Self {
         deserialize(&s.from_hex::<Vec<u8>>().unwrap() as &[u8]).unwrap()
@@ -276,13 +278,9 @@ impl codec::Encode for Transaction {
 }
 
 impl codec::Decode for Transaction {
-    fn decode<I: codec::Input>(value: &mut I) -> Option<Self> {
-        let value: Option<Vec<u8>> = codec::Decode::decode(value);
-        if let Some(value) = value {
-            deserialize(Reader::new(&value)).ok()
-        } else {
-            None
-        }
+    fn decode<I: codec::Input>(value: &mut I) -> Result<Self, codec::Error> {
+        let value: Vec<u8> = codec::Decode::decode(value)?;
+        deserialize(Reader::new(&value)).map_err(|_| "deserialize Transaction error".into())
     }
 }
 

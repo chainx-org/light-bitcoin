@@ -1,11 +1,12 @@
 [package]
 name = "script"
-version = "0.1.0"
-authors = ["debris <marek.kotewicz@gmail.com> and koushiro <koushiro.cqx@gmail.com>"]
+version = "0.2.0"
+authors = ["ChainX <https://github.com/chainx-org>"]
 edition = "2018"
+license = "GPL-3.0"
 
 [dependencies]
-primitives = { path = "../primitives", default-features = false, features = ["codec"] }
+primitives = { path = "../primitives", default-features = false }
 crypto = { path = "../crypto", default-features = false }
 serialization = { path = "../serialization", default-features = false }
 keys = { path = "../keys", default-features = false }
@@ -15,7 +16,7 @@ chain = { path = "../chain", default-features = false }
 hex-literal = "0.2"
 
 [features]
-default = ["std"]
+default = []
 std = [
     "primitives/std",
     "crypto/std",
