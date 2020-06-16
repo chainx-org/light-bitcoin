@@ -3,7 +3,7 @@ use alloc::vec::Vec;
 use core::fmt;
 
 use crypto::dhash256;
-use primitives::{h256_reverse, Compact, H256};
+use primitives::{h256_conv_endian, Compact, H256};
 use serialization::{deserialize, serialize, Deserializable, Reader, Serializable};
 
 use rustc_hex::FromHex;
@@ -28,9 +28,9 @@ impl fmt::Debug for BlockHeader {
             .field("version", &self.version)
             .field(
                 "previous_header_hash",
-                &h256_reverse(self.previous_header_hash),
+                &h256_conv_endian(self.previous_header_hash),
             )
-            .field("merkle_root_hash", &h256_reverse(self.merkle_root_hash))
+            .field("merkle_root_hash", &h256_conv_endian(self.merkle_root_hash))
             .field("time", &self.time)
             .field("bits", &self.bits)
             .field("nonce", &self.nonce)

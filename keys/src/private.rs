@@ -144,7 +144,7 @@ impl DisplayLayout for Private {
 mod tests {
     #[cfg(not(feature = "std"))]
     use alloc::string::ToString;
-    use primitives::h256_from_rev_str;
+    use primitives::h256_conv_endian_from_str;
 
     use super::*;
 
@@ -152,7 +152,7 @@ mod tests {
     fn test_private_to_string() {
         let private = Private {
             network: Network::Mainnet,
-            secret: h256_from_rev_str(
+            secret: h256_conv_endian_from_str(
                 "063377054c25f98bc538ac8dd2cf9064dd5d253a725ece0628a34e2f84803bd5",
             ),
             compressed: false,
@@ -168,7 +168,7 @@ mod tests {
     fn test_private_from_str() {
         let private = Private {
             network: Network::Mainnet,
-            secret: h256_from_rev_str(
+            secret: h256_conv_endian_from_str(
                 "063377054c25f98bc538ac8dd2cf9064dd5d253a725ece0628a34e2f84803bd5",
             ),
             compressed: false,

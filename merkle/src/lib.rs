@@ -303,7 +303,7 @@ mod tests {
     use hashbrown::HashSet;
 
     use chain::{merkle_root, Block, BlockHeader};
-    use primitives::{h256_from_rev_str, H256};
+    use primitives::{h256_conv_endian_from_str, H256};
     use rand::prelude::*;
     use serialization::{deserialize, serialize, Deserializable, Serializable};
 
@@ -350,7 +350,7 @@ mod tests {
         for tx_count in tx_counts {
             // Create some fake tx ids
             let txids = (1..=tx_count)
-                .map(|i| h256_from_rev_str(&format!("{:064x}", i)))
+                .map(|i| h256_conv_endian_from_str(&format!("{:064x}", i)))
                 .collect::<Vec<_>>();
 
             // Calculate the merkle root and height
@@ -425,7 +425,7 @@ mod tests {
         // Create some fake tx ids with the last 2 hashes repeating
         let txids: Vec<H256> = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 9, 10]
             .iter()
-            .map(|i| h256_from_rev_str(&format!("{:064x}", i)))
+            .map(|i| h256_conv_endian_from_str(&format!("{:064x}", i)))
             .collect();
 
         let matches = vec![
@@ -469,7 +469,7 @@ mod tests {
             "f9fc751cb7dc372406a9f8d738d5e6f8f63bab71986a39cf36ee70ee17036d07",
         ]
         .iter()
-        .map(|data| h256_from_rev_str(data))
+        .map(|data| h256_conv_endian_from_str(data))
         .collect();
 
         let txid1 = txids[0];
@@ -505,7 +505,7 @@ mod tests {
         let block = get_block_13b8a();
         let txids = ["c0ffee00003bafa802c8aa084379aa98d9fcd632ddc2ed9782b586ec87451f20"]
             .iter()
-            .map(|data| h256_from_rev_str(data))
+            .map(|data| h256_conv_endian_from_str(data))
             .collect();
 
         let merkle_block = MerkleBlock::from_block(&block, &txids);
