@@ -17,6 +17,11 @@ serde = { version = "1.0", default-features = false, features = ["alloc", "deriv
 [dev-dependencies]
 criterion = "0.3"
 
+[[bench]]
+name = "merkle_root"
+path = "benches/merkle_root.rs"
+harness = false
+
 [features]
 default = []
 std = [
