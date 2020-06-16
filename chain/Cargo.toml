@@ -5,6 +5,18 @@ authors = ["ChainX <https://github.com/chainx-org>"]
 edition = "2018"
 license = "GPL-3.0"
 
+[features]
+default = []
+std = [
+  "primitives/std",
+  "serialization/std",
+  "crypto/std",
+
+  "rustc-hex/std",
+  "codec/std",
+  "serde/std",
+]
+
 [dependencies]
 primitives = { path = "../primitives", default-features = false }
 serialization = { path = "../serialization", default-features = false, features = ["derive"] }
@@ -21,15 +33,3 @@ criterion = "0.3"
 name = "merkle_root"
 path = "benches/merkle_root.rs"
 harness = false
-
-[features]
-default = []
-std = [
-    "primitives/std",
-    "serialization/std",
-    "crypto/std",
-    "rustc-hex/std",
-
-    "codec/std",
-    "serde/std",
-]

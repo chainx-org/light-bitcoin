@@ -5,6 +5,16 @@ authors = ["ChainX <https://github.com/chainx-org>"]
 edition = "2018"
 license = "GPL-3.0"
 
+[features]
+default = []
+std = [
+  "primitives/std",
+  "crypto/std",
+  "serialization/std",
+  "keys/std",
+  "chain/std",
+]
+
 [dependencies]
 primitives = { path = "../primitives", default-features = false }
 crypto = { path = "../crypto", default-features = false }
@@ -14,13 +24,3 @@ chain = { path = "../chain", default-features = false }
 
 [dev-dependencies]
 hex-literal = "0.2"
-
-[features]
-default = []
-std = [
-    "primitives/std",
-    "crypto/std",
-    "serialization/std",
-    "keys/std",
-    "chain/std",
-]

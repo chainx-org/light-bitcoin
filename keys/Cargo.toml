@@ -5,6 +5,18 @@ authors = ["ChainX <https://github.com/chainx-org>"]
 edition = "2018"
 license = "GPL-3.0"
 
+[features]
+default = []
+std = [
+  "primitives/std",
+  "serialization/std",
+  "crypto/std",
+  "rustc-hex/std",
+  "libsecp256k1/std",
+  "codec/std",
+  "serde/std",
+]
+
 [dependencies]
 primitives = { path = "../primitives", default-features = false }
 serialization = { path = "../serialization", default-features = false, features = ["derive"] }
@@ -17,15 +29,3 @@ serde = { version = "1.0", default-features = false, features = ["alloc", "deriv
 
 [dev-dependencies]
 hex-literal = "0.2"
-
-[features]
-default = []
-std = [
-    "primitives/std",
-    "serialization/std",
-    "crypto/std",
-    "rustc-hex/std",
-    "libsecp256k1/std",
-    "codec/std",
-    "serde/std",
-]

@@ -5,6 +5,15 @@ authors = ["ChainX <https://github.com/chainx-org>"]
 edition = "2018"
 license = "GPL-3.0"
 
+[features]
+default = []
+std = [
+  "primitives/std",
+  "serialization/std",
+  "chain/std",
+  "codec/std",
+]
+
 [dependencies]
 primitives = { path = "../primitives", default-features = false }
 serialization = { path = "../serialization", default-features = false, features = ["derive"] }
@@ -16,12 +25,3 @@ crypto = { path = "../crypto", default-features = false }
 hashbrown = { version = "0.7", default-features = false, features = ["ahash"] }
 hex = { version = "0.4", default-features = false }
 rand = "0.7"
-
-[features]
-default = []
-std = [
-     "primitives/std",
-     "serialization/std",
-     "chain/std",
-     "codec/std",
-]

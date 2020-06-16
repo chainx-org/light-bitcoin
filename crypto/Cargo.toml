@@ -5,6 +5,16 @@ authors = ["ChainX <https://github.com/chainx-org>"]
 edition = "2018"
 license = "GPL-3.0"
 
+[features]
+default = []
+std = [
+  "primitives/std",
+  "digest/std",
+  "ripemd160/std",
+  "sha-1/std",
+  "sha2/std",
+]
+
 [dependencies]
 primitives = { path = "../primitives", default-features = false }
 ripemd160 = { version = "0.8", default-features = false }   # support `no_std`
@@ -15,13 +25,3 @@ digest = "0.8"      # support `no_std` by default
 
 [dev-dependencies]
 hex-literal = "0.2"
-
-[features]
-default = []
-std = [
-    "primitives/std",
-    "digest/std",
-    "ripemd160/std",
-    "sha-1/std",
-    "sha2/std",
-]
