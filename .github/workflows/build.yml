@@ -6,8 +6,8 @@ on:
 name: build
 
 jobs:
-  check:
-    name: Check
+  lint:
+    name: Lint
     strategy:
       matrix:
         platform: [ubuntu-latest, macos-latest]
@@ -39,11 +39,11 @@ jobs:
           args: --all --all-targets -- -D warnings
 
   wasm:
-    name: Build Wasm
+    name: Check Wasm
     strategy:
       matrix:
         platform: [ubuntu-latest, macos-latest]
-        toolchain: [stable]
+        toolchain: [nightly]
     runs-on: ${{ matrix.platform }}
 
     steps:
@@ -58,11 +58,11 @@ jobs:
           target: wasm32-unknown-unknown
           override: true
 
-      - name: Build Wasm
+      - name: Build Wasm Test Suite
         uses: actions-rs/cargo@v1
         with:
           command: build
-          args: --all --no-default-features
+          args: --no-default-features -p light-bitcoin-wasm-test
 
   native:
     name: Test Native
