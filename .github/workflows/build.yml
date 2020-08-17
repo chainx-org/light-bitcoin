@@ -36,7 +36,7 @@ jobs:
         uses: actions-rs/cargo@v1
         with:
           command: clippy
-          args: --all --all-targets -- -D warnings
+          args: --all --all-targets --exclude light-bitcoin-wasm-test -- -D warnings
 
   wasm:
     name: Check Wasm
@@ -87,7 +87,7 @@ jobs:
         uses: actions-rs/cargo@v1
         with:
           command: test
-          args: --all
+          args: --all --exclude light-bitcoin-wasm-test
 
   coverage:
     name: Code Coverage
@@ -106,8 +106,7 @@ jobs:
       - name: Run cargo-tarpaulin
         uses: actions-rs/tarpaulin@v0.1
         with:
-          version: '0.14.2'
-          args: '--workspace'
+          args: --all --exclude light-bitcoin-wasm-test
 
       - name: Upload to codecov.io
-        uses: codecov/codecov-action@v1.0.12
+        uses: codecov/codecov-action@v1
