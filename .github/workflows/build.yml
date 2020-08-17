@@ -62,7 +62,7 @@ jobs:
         uses: actions-rs/cargo@v1
         with:
           command: build
-          args: --no-default-features -p light-bitcoin-wasm-test
+          args: --target wasm32-unknown-unknown --no-default-features -p light-bitcoin-wasm-test
 
   native:
     name: Test Native
