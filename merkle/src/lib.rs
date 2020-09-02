@@ -69,7 +69,11 @@ impl fmt::Debug for PartialMerkleTree {
             .field("tx_count", &self.tx_count)
             .field(
                 "hashes",
-                &self.hashes.iter().map(h256_conv_endian).collect::<Vec<_>>(),
+                &self
+                    .hashes
+                    .iter()
+                    .map(|hash| h256_conv_endian(*hash))
+                    .collect::<Vec<_>>(),
             )
             .field("bits", &self.bits)
             .finish()
