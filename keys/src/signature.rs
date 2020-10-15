@@ -3,11 +3,10 @@
 //! http://bitcoin.stackexchange.com/q/12554/40688
 
 #[cfg(not(feature = "std"))]
-use alloc::{string::String, vec::Vec};
+use alloc::vec::Vec;
 use core::{fmt, ops, str};
 
 use light_bitcoin_primitives::H520;
-use rustc_hex::{FromHex, ToHex};
 
 use crate::error::Error;
 
@@ -16,13 +15,13 @@ pub struct Signature(Vec<u8>);
 
 impl fmt::Debug for Signature {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        self.0.to_hex::<String>().fmt(f)
+        hex::encode(&self.0).fmt(f)
     }
 }
 
 impl fmt::Display for Signature {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        self.0.to_hex::<String>().fmt(f)
+        hex::encode(&self.0).fmt(f)
     }
 }
 
@@ -38,15 +37,8 @@ impl str::FromStr for Signature {
     type Err = Error;
 
     fn from_str(s: &str) -> Result<Self, Error> {
-        let vec = s.from_hex().map_err(|_| Error::InvalidSignature)?;
+        let vec = hex::decode(s).map_err(|_| Error::InvalidSignature)?;
         Ok(Signature(vec))
-    }
-}
-
-// Only for test
-impl From<&'static str> for Signature {
-    fn from(s: &'static str) -> Self {
-        s.parse().unwrap()
     }
 }
 
@@ -102,17 +94,8 @@ impl str::FromStr for CompactSignature {
     type Err = Error;
 
     fn from_str(s: &str) -> Result<Self, Error> {
-        match FromHex::from_hex::<Vec<u8>>(s) {
-            Ok(hash) => Ok(CompactSignature(H520::from_slice(&hash))),
-            _ => Err(Error::InvalidSignature),
-        }
-    }
-}
-
-// Only for test
-impl From<&'static str> for CompactSignature {
-    fn from(s: &'static str) -> Self {
-        s.parse().unwrap()
+        let hash = hex::decode(s).map_err(|_| Error::InvalidSignature)?;
+        Ok(CompactSignature(H520::from_slice(&hash)))
     }
 }
 

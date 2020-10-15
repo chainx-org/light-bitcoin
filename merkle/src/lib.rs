@@ -7,10 +7,9 @@ extern crate alloc;
 
 #[cfg(not(feature = "std"))]
 use alloc::{string::String, vec, vec::Vec};
-use core::fmt;
 
 use light_bitcoin_chain::merkle_node_hash;
-use light_bitcoin_primitives::{h256_conv_endian, io, H256};
+use light_bitcoin_primitives::{io, H256};
 use light_bitcoin_serialization::{
     deserialize, serialize, Deserializable, Reader, Serializable, Stream,
 };
@@ -53,7 +52,7 @@ impl From<&str> for Error {
 }
 
 /// Partial merkle tree
-#[derive(PartialEq, Eq, Clone, Default)]
+#[derive(PartialEq, Eq, Clone, Debug, Default)]
 pub struct PartialMerkleTree {
     /// The total number of transactions in the block
     pub tx_count: u32,
@@ -63,6 +62,7 @@ pub struct PartialMerkleTree {
     pub bits: Vec<bool>,
 }
 
+/*
 impl fmt::Debug for PartialMerkleTree {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         f.debug_struct("PartialMerkleTree")
@@ -79,6 +79,7 @@ impl fmt::Debug for PartialMerkleTree {
             .finish()
     }
 }
+*/
 
 impl PartialMerkleTree {
     /// Construct a partial merkle tree
@@ -336,7 +337,7 @@ mod tests {
     use hashbrown::HashSet;
 
     use light_bitcoin_chain::{merkle_root, Block, BlockHeader};
-    use light_bitcoin_primitives::{h256_conv_endian_from_str, H256};
+    use light_bitcoin_primitives::{h256, H256};
     use light_bitcoin_serialization::{deserialize, serialize, Deserializable, Serializable};
     use rand::prelude::*;
 
@@ -383,7 +384,7 @@ mod tests {
         for tx_count in tx_counts {
             // Create some fake tx ids
             let txids = (1..=tx_count)
-                .map(|i| h256_conv_endian_from_str(&format!("{:064x}", i)))
+                .map(|i| h256(&format!("{:064x}", i)))
                 .collect::<Vec<_>>();
 
             // Calculate the merkle root and height
@@ -458,7 +459,7 @@ mod tests {
         // Create some fake tx ids with the last 2 hashes repeating
         let txids: Vec<H256> = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 9, 10]
             .iter()
-            .map(|i| h256_conv_endian_from_str(&format!("{:064x}", i)))
+            .map(|i| h256(&format!("{:064x}", i)))
             .collect();
 
         let matches = vec![
@@ -497,20 +498,11 @@ mod tests {
     fn merkle_block_construct_from_txids_found() {
         let block = get_block_13b8a();
 
-        let txids: Vec<H256> = [
-            "74d681e0e03bafa802c8aa084379aa98d9fcd632ddc2ed9782b586ec87451f20",
-            "f9fc751cb7dc372406a9f8d738d5e6f8f63bab71986a39cf36ee70ee17036d07",
-        ]
-        .iter()
-        .map(|data| h256_conv_endian_from_str(data))
-        .collect();
-
-        let txid1 = txids[0];
-        let txid2 = txids[1];
-        let txids = txids.into_iter().collect();
+        let txid1 = h256("74d681e0e03bafa802c8aa084379aa98d9fcd632ddc2ed9782b586ec87451f20");
+        let txid2 = h256("f9fc751cb7dc372406a9f8d738d5e6f8f63bab71986a39cf36ee70ee17036d07");
+        let txids = vec![txid1, txid2].into_iter().collect();
 
         let merkle_block = MerkleBlock::from_block(&block, &txids);
-        // println!("{:#?}", merkle_block.pmt);
         assert_eq!(merkle_block.header.hash(), block.hash());
 
         let mut matches: Vec<H256> = vec![];
@@ -520,8 +512,6 @@ mod tests {
             .extract_matches(&mut matches, &mut indexes)
             .unwrap();
 
-        // println!("{:#?}", matches);
-        // println!("{:#?}", indexes);
         assert_eq!(merkle_root, block.block_header.merkle_root_hash);
         assert_eq!(matches.len(), 2);
 
@@ -536,10 +526,11 @@ mod tests {
     #[test]
     fn merkle_block_construct_from_txids_not_found() {
         let block = get_block_13b8a();
-        let txids = ["c0ffee00003bafa802c8aa084379aa98d9fcd632ddc2ed9782b586ec87451f20"]
-            .iter()
-            .map(|data| h256_conv_endian_from_str(data))
-            .collect();
+        let txids = vec![h256(
+            "c0ffee00003bafa802c8aa084379aa98d9fcd632ddc2ed9782b586ec87451f20",
+        )]
+        .into_iter()
+        .collect();
 
         let merkle_block = MerkleBlock::from_block(&block, &txids);
 
@@ -557,7 +548,9 @@ mod tests {
         assert_eq!(indexes.len(), 0);
     }
 
-    /// Returns a real block (0000000000013b8ab2cd513b0261a14096412195a72a0c4827d229dcc7e0f7af) with 9 txs.
+    // Block 100,002 (0000000000013b8ab2cd513b0261a14096412195a72a0c4827d229dcc7e0f7af) with 9 txs.
+    // https://blockchain.info/rawblock/0000000000013b8ab2cd513b0261a14096412195a72a0c4827d229dcc7e0f7af
+    // https://blockchain.info/rawblock/0000000000013b8ab2cd513b0261a14096412195a72a0c4827d229dcc7e0f7af?format=hex
     fn get_block_13b8a() -> Block {
         let block_hex =
             "0100000090f0a9f110702f808219ebea1173056042a714bad51b916cb6800000000000005275289558f51c\

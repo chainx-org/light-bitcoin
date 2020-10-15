@@ -49,13 +49,6 @@ impl str::FromStr for Private {
     }
 }
 
-// Only for test
-impl From<&'static str> for Private {
-    fn from(s: &'static str) -> Self {
-        s.parse().unwrap()
-    }
-}
-
 impl Private {
     pub fn sign(&self, message: &Message) -> Result<Signature, Error> {
         let secret = secp256k1::SecretKey::parse(self.secret.as_fixed_bytes())?;
@@ -139,7 +132,7 @@ impl DisplayLayout for Private {
 
 #[cfg(test)]
 mod tests {
-    use light_bitcoin_primitives::h256_conv_endian_from_str;
+    use light_bitcoin_primitives::{h256, hash_conv_endian};
 
     use super::*;
 
@@ -147,9 +140,9 @@ mod tests {
     fn test_private_to_string() {
         let private = Private {
             network: Network::Mainnet,
-            secret: h256_conv_endian_from_str(
+            secret: hash_conv_endian(h256(
                 "063377054c25f98bc538ac8dd2cf9064dd5d253a725ece0628a34e2f84803bd5",
-            ),
+            )),
             compressed: false,
         };
 
@@ -163,9 +156,9 @@ mod tests {
     fn test_private_from_str() {
         let private = Private {
             network: Network::Mainnet,
-            secret: h256_conv_endian_from_str(
+            secret: hash_conv_endian(h256(
                 "063377054c25f98bc538ac8dd2cf9064dd5d253a725ece0628a34e2f84803bd5",
-            ),
+            )),
             compressed: false,
         };
 

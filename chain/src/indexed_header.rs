@@ -1,12 +1,10 @@
-use core::fmt;
-
-use light_bitcoin_primitives::{h256_conv_endian, io, H256};
+use light_bitcoin_primitives::{io, H256};
 use light_bitcoin_serialization::{Deserializable, Reader};
 
 use crate::block_header::{block_header_hash, BlockHeader};
 use crate::read_and_hash::ReadAndHash;
 
-#[derive(Ord, PartialOrd, Eq, Copy, Clone, Default)]
+#[derive(Ord, PartialOrd, Eq, Copy, Clone, Debug, Default)]
 pub struct IndexedBlockHeader {
     pub hash: H256,
     pub raw: BlockHeader,
@@ -15,15 +13,6 @@ pub struct IndexedBlockHeader {
 impl PartialEq for IndexedBlockHeader {
     fn eq(&self, other: &Self) -> bool {
         self.hash == other.hash
-    }
-}
-
-impl fmt::Debug for IndexedBlockHeader {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        f.debug_struct("IndexedBlockHeader")
-            .field("hash", &h256_conv_endian(self.hash))
-            .field("raw", &self.raw)
-            .finish()
     }
 }
 

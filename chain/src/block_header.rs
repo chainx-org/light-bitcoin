@@ -1,17 +1,16 @@
 #[cfg(not(feature = "std"))]
 use alloc::vec::Vec;
-use core::fmt;
+use core::str;
 
 use light_bitcoin_crypto::dhash256;
-use light_bitcoin_primitives::{h256_conv_endian, Compact, H256};
+use light_bitcoin_primitives::{io, Compact, H256};
 use light_bitcoin_serialization::{deserialize, serialize, Deserializable, Reader, Serializable};
 
-use rustc_hex::FromHex;
 #[cfg(feature = "std")]
 use serde::{Deserialize, Serialize};
 
 #[rustfmt::skip]
-#[derive(Ord, PartialOrd, Eq, PartialEq, Copy, Clone, Default)]
+#[derive(Ord, PartialOrd, Eq, PartialEq, Copy, Clone, Debug, Default)]
 #[cfg_attr(feature = "std", derive(Serialize, Deserialize))]
 #[derive(Serializable, Deserializable)]
 pub struct BlockHeader {
@@ -23,26 +22,12 @@ pub struct BlockHeader {
     pub nonce: u32,
 }
 
-impl fmt::Debug for BlockHeader {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        f.debug_struct("BlockHeader")
-            .field("version", &self.version)
-            .field(
-                "previous_header_hash",
-                &h256_conv_endian(self.previous_header_hash),
-            )
-            .field("merkle_root_hash", &h256_conv_endian(self.merkle_root_hash))
-            .field("time", &self.time)
-            .field("bits", &self.bits)
-            .field("nonce", &self.nonce)
-            .finish()
-    }
-}
+impl str::FromStr for BlockHeader {
+    type Err = io::Error;
 
-// Only for test
-impl From<&'static str> for BlockHeader {
-    fn from(s: &'static str) -> Self {
-        deserialize(&s.from_hex::<Vec<u8>>().unwrap() as &[u8]).unwrap()
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        let bytes = hex::decode(s).map_err(|_| io::Error::InvalidData)?;
+        deserialize(bytes.as_slice())
     }
 }
 

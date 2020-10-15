@@ -149,13 +149,6 @@ impl str::FromStr for Address {
     }
 }
 
-// Only for test
-impl From<&'static str> for Address {
-    fn from(s: &'static str) -> Self {
-        s.parse().unwrap()
-    }
-}
-
 #[derive(Ord, PartialOrd, Eq, PartialEq, Copy, Clone, Debug, Default)]
 pub struct AddressDisplayLayout([u8; 25]);
 
@@ -218,7 +211,7 @@ impl DisplayLayout for Address {
 
 #[cfg(test)]
 mod tests {
-    use hex_literal::hex;
+    use light_bitcoin_primitives::h160;
 
     use super::*;
 
@@ -227,7 +220,7 @@ mod tests {
         let address = Address {
             kind: Type::P2PKH,
             network: Network::Mainnet,
-            hash: AddressHash::from(hex!["3f4aa1fedf1f54eeb03b759deadb36676b184911"]),
+            hash: h160("3f4aa1fedf1f54eeb03b759deadb36676b184911"),
         };
         assert_eq!(
             address.to_string(),
@@ -237,7 +230,7 @@ mod tests {
         let address = Address {
             kind: Type::P2SH,
             network: Network::Mainnet,
-            hash: AddressHash::from(hex!["d246f700f4969106291a75ba85ad863cae68d667"]),
+            hash: h160("d246f700f4969106291a75ba85ad863cae68d667"),
         };
         assert_eq!(
             address.to_string(),
@@ -250,7 +243,7 @@ mod tests {
         let address = Address {
             kind: Type::P2PKH,
             network: Network::Mainnet,
-            hash: AddressHash::from(hex!["3f4aa1fedf1f54eeb03b759deadb36676b184911"]),
+            hash: h160("3f4aa1fedf1f54eeb03b759deadb36676b184911"),
         };
         assert_eq!(
             address,
@@ -260,7 +253,7 @@ mod tests {
         let address = Address {
             kind: Type::P2SH,
             network: Network::Mainnet,
-            hash: AddressHash::from(hex!["d246f700f4969106291a75ba85ad863cae68d667"]),
+            hash: h160("d246f700f4969106291a75ba85ad863cae68d667"),
         };
         assert_eq!(
             address,
