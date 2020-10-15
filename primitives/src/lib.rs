@@ -17,10 +17,8 @@ pub use self::hash::{H160, H256, H264, H32, H512, H520};
 /// `s` must be 10 (with 0x prefix) or 8 (without 0x prefix) chars
 pub fn h32(s: &str) -> H32 {
     let hex = if s.starts_with("0x") {
-        assert_eq!(s.len(), 10);
         hex::decode(&s[2..]).unwrap()
     } else {
-        assert_eq!(s.len(), 8);
         hex::decode(s).unwrap()
     };
     H32::from_slice(&hex)
@@ -29,10 +27,8 @@ pub fn h32(s: &str) -> H32 {
 /// `s` must be 42 (with 0x prefix) or 40 (without 0x prefix) chars
 pub fn h160(s: &str) -> H160 {
     let hex = if s.starts_with("0x") {
-        assert_eq!(s.len(), 42);
         hex::decode(&s[2..]).unwrap()
     } else {
-        assert_eq!(s.len(), 40);
         hex::decode(s).unwrap()
     };
     H160::from_slice(&hex)
@@ -41,10 +37,8 @@ pub fn h160(s: &str) -> H160 {
 /// `s` must be 66 (with 0x prefix) or 64 (without 0x prefix) chars
 pub fn h256(s: &str) -> H256 {
     let hex = if s.starts_with("0x") {
-        assert_eq!(s.len(), 66);
         hex::decode(&s[2..]).unwrap()
     } else {
-        assert_eq!(s.len(), 64);
         hex::decode(s).unwrap()
     };
     H256::from_slice(&hex)
@@ -53,10 +47,8 @@ pub fn h256(s: &str) -> H256 {
 /// `s` must be 68 (with 0x prefix) or 66 (without 0x prefix) chars
 pub fn h264(s: &str) -> H264 {
     let hex = if s.starts_with("0x") {
-        assert_eq!(s.len(), 68);
         hex::decode(&s[2..]).unwrap()
     } else {
-        assert_eq!(s.len(), 66);
         hex::decode(s).unwrap()
     };
     H264::from_slice(&hex)
@@ -65,10 +57,8 @@ pub fn h264(s: &str) -> H264 {
 /// `s` must be 130 (with 0x prefix) or 128 (without 0x prefix) chars
 pub fn h512(s: &str) -> H512 {
     let hex = if s.starts_with("0x") {
-        assert_eq!(s.len(), 130);
         hex::decode(&s[2..]).unwrap()
     } else {
-        assert_eq!(s.len(), 128);
         hex::decode(s).unwrap()
     };
     H512::from_slice(&hex)
@@ -77,10 +67,8 @@ pub fn h512(s: &str) -> H512 {
 /// `s` must be 132 (with 0x prefix) or 130 (without 0x prefix) chars
 pub fn h520(s: &str) -> H520 {
     let hex = if s.starts_with("0x") {
-        assert_eq!(s.len(), 132);
         hex::decode(&s[2..]).unwrap()
     } else {
-        assert_eq!(s.len(), 130);
         hex::decode(s).unwrap()
     };
     H520::from_slice(&hex)
