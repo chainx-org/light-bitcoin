@@ -130,7 +130,7 @@ impl str::FromStr for Transaction {
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         let bytes = hex::decode(s).map_err(|_| io::Error::InvalidData)?;
-        light_bitcoin_serialization::deserialize(bytes.as_slice())
+        deserialize(bytes.as_slice())
     }
 }
 

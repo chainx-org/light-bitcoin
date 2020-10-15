@@ -62,25 +62,6 @@ pub struct PartialMerkleTree {
     pub bits: Vec<bool>,
 }
 
-/*
-impl fmt::Debug for PartialMerkleTree {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        f.debug_struct("PartialMerkleTree")
-            .field("tx_count", &self.tx_count)
-            .field(
-                "hashes",
-                &self
-                    .hashes
-                    .iter()
-                    .map(|hash| h256_conv_endian(*hash))
-                    .collect::<Vec<_>>(),
-            )
-            .field("bits", &self.bits)
-            .finish()
-    }
-}
-*/
-
 impl PartialMerkleTree {
     /// Construct a partial merkle tree
     /// The `txids` are the transaction hashes of the block and the `matches` is the contains flags

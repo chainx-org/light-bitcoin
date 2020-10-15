@@ -37,8 +37,12 @@ impl str::FromStr for Signature {
     type Err = Error;
 
     fn from_str(s: &str) -> Result<Self, Error> {
-        let vec = hex::decode(s).map_err(|_| Error::InvalidSignature)?;
-        Ok(Signature(vec))
+        let bytes = if s.starts_with("0x") {
+            hex::decode(&s.as_bytes()[2..]).map_err(|_| Error::InvalidSignature)?
+        } else {
+            hex::decode(s).map_err(|_| Error::InvalidSignature)?
+        };
+        Ok(Signature(bytes))
     }
 }
 
@@ -94,8 +98,18 @@ impl str::FromStr for CompactSignature {
     type Err = Error;
 
     fn from_str(s: &str) -> Result<Self, Error> {
-        let hash = hex::decode(s).map_err(|_| Error::InvalidSignature)?;
-        Ok(CompactSignature(H520::from_slice(&hash)))
+        let bytes = if s.starts_with("0x") {
+            if s.len() != H520::len_bytes() * 8 + 2 {
+                return Err(Error::InvalidSignature);
+            }
+            hex::decode(&s.as_bytes()[2..]).map_err(|_| Error::InvalidSignature)?
+        } else {
+            if s.len() != H520::len_bytes() * 8 {
+                return Err(Error::InvalidSignature);
+            }
+            hex::decode(s).map_err(|_| Error::InvalidSignature)?
+        };
+        Ok(CompactSignature(H520::from_slice(&bytes)))
     }
 }
 

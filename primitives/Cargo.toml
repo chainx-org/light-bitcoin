@@ -9,8 +9,8 @@ license = "GPL-3.0"
 default = ["std"]
 std = [
   "byteorder/std",
-  "hex/std",
   "fixed-hash/std",
+  "hex/std",
   "serde",
 
   "impl-serde",
