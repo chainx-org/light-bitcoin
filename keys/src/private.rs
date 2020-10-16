@@ -25,7 +25,7 @@ pub struct Private {
 }
 
 impl fmt::Debug for Private {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         writeln!(f, "network: {:?}", self.network)?;
         writeln!(f, "secret: {}", self.secret)?;
         writeln!(f, "compressed: {}", self.compressed)
@@ -33,7 +33,7 @@ impl fmt::Debug for Private {
 }
 
 impl fmt::Display for Private {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         bs58::encode(self.layout().as_slice()).into_string().fmt(f)
     }
 }

@@ -14,13 +14,13 @@ use crate::error::Error;
 pub struct Signature(Vec<u8>);
 
 impl fmt::Debug for Signature {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         hex::encode(&self.0).fmt(f)
     }
 }
 
 impl fmt::Display for Signature {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         hex::encode(&self.0).fmt(f)
     }
 }
@@ -75,13 +75,13 @@ impl<'a> From<&'a [u8]> for Signature {
 pub struct CompactSignature(H520);
 
 impl fmt::Debug for CompactSignature {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         writeln!(f, "{}", self.0)
     }
 }
 
 impl fmt::Display for CompactSignature {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         writeln!(f, "{}", self.0)
     }
 }

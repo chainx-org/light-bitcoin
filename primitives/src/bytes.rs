@@ -35,7 +35,7 @@ impl str::FromStr for Bytes {
 }
 
 impl fmt::Debug for Bytes {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         f.write_str(hex::encode(&self.0).as_str())
     }
 }
@@ -124,7 +124,7 @@ struct BytesVisitor;
 impl<'de> serde::de::Visitor<'de> for BytesVisitor {
     type Value = Bytes;
 
-    fn expecting(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
+    fn expecting(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(formatter, "a 0x-prefixed hex-encoded vector of bytes")
     }
 

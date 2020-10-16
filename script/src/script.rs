@@ -96,7 +96,7 @@ impl From<Script> for Bytes {
 }
 
 impl fmt::Display for Script {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         let mut pc = 0;
 
         while pc < self.len() {
