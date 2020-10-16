@@ -3,7 +3,7 @@ use alloc::vec::Vec;
 use core::{fmt, str};
 
 use light_bitcoin_crypto::dhash256;
-use light_bitcoin_primitives::{hash_rev, io, Compact, H256};
+use light_bitcoin_primitives::{hash_rev, Compact, H256};
 use light_bitcoin_serialization::{deserialize, serialize, Deserializable, Reader, Serializable};
 
 #[cfg(feature = "std")]
@@ -47,12 +47,13 @@ impl fmt::Debug for BlockHeader {
     }
 }
 
+// mainly use for test
 impl str::FromStr for BlockHeader {
-    type Err = io::Error;
+    type Err = &'static str;
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        let bytes = hex::decode(s).map_err(|_| io::Error::InvalidData)?;
-        deserialize(bytes.as_slice())
+        let bytes = hex::decode(s).map_err(|_| "hex decode error")?;
+        deserialize(bytes.as_slice()).map_err(|_| "deserialize error")
     }
 }
 

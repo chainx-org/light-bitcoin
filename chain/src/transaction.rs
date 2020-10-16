@@ -173,12 +173,13 @@ pub struct Transaction {
     pub lock_time: u32,
 }
 
+// mainly use for test
 impl str::FromStr for Transaction {
-    type Err = io::Error;
+    type Err = &'static str;
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        let bytes = hex::decode(s).map_err(|_| io::Error::InvalidData)?;
-        deserialize(bytes.as_slice())
+        let bytes = hex::decode(s).map_err(|_| "hex decode error")?;
+        deserialize(bytes.as_slice()).map_err(|_| "deserialize error")
     }
 }
 

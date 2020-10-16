@@ -2,7 +2,7 @@
 use alloc::{vec, vec::Vec};
 use core::str;
 
-use light_bitcoin_primitives::{io, H256};
+use light_bitcoin_primitives::H256;
 use light_bitcoin_serialization::{
     deserialize, serialized_list_size, serialized_list_size_with_flags, Deserializable,
     Serializable, SERIALIZE_TRANSACTION_WITNESS,
@@ -32,12 +32,13 @@ impl From<Block> for IndexedBlock {
     }
 }
 
+// mainly use for test
 impl str::FromStr for IndexedBlock {
-    type Err = io::Error;
+    type Err = &'static str;
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        let bytes = hex::decode(s).map_err(|_| io::Error::InvalidData)?;
-        deserialize(bytes.as_slice())
+        let bytes = hex::decode(s).map_err(|_| "hex decode error")?;
+        deserialize(bytes.as_slice()).map_err(|_| "deserialize error")
     }
 }
 

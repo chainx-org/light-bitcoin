@@ -33,6 +33,7 @@ impl ops::Deref for Signature {
     }
 }
 
+// mainly use for test
 impl str::FromStr for Signature {
     type Err = Error;
 
@@ -94,6 +95,7 @@ impl ops::Deref for CompactSignature {
     }
 }
 
+// mainly use for test
 impl str::FromStr for CompactSignature {
     type Err = Error;
 
