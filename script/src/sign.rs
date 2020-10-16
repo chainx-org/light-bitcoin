@@ -380,7 +380,7 @@ fn compute_hash_outputs(
 #[cfg(test)]
 mod tests {
     use light_bitcoin_keys::{Address, Private};
-    use light_bitcoin_primitives::h256;
+    use light_bitcoin_primitives::{h256, h256_rev};
 
     use super::*;
 
@@ -393,7 +393,7 @@ mod tests {
             .parse()
             .unwrap();
         let previous_tx_hash =
-            h256("81b4c832d70cb56ff957589752eb4125a4cab78a25a8fc52d6a09e5bd4404d48");
+            h256_rev("81b4c832d70cb56ff957589752eb4125a4cab78a25a8fc52d6a09e5bd4404d48");
         let previous_output_index = 0;
         let from: Address = "1MMMMSUb1piy2ufrSguNUdFmAcvqrQF8M5".parse().unwrap();
         let to: Address = "1KKKK6N21XKo48zWKuQKXdvSsCf95ibHFa".parse().unwrap();
@@ -416,7 +416,7 @@ mod tests {
             sequence: 0xffff_ffff,
             previous_output: OutPoint {
                 index: previous_output_index,
-                hash: previous_tx_hash,
+                txid: previous_tx_hash,
             },
         };
 
@@ -446,7 +446,7 @@ mod tests {
         let tx: Transaction = tx.parse().unwrap();
         let signer: TransactionInputSigner = tx.into();
         let script: Script = script.parse().unwrap();
-        let expected = h256(result);
+        let expected = h256_rev(result);
 
         let sighash = Sighash::from_u32(SignatureVersion::Base, hash_type as u32);
         let hash = signer.signature_hash_original(input_index, &script, hash_type as u32, sighash);

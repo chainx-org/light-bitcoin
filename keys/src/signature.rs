@@ -99,12 +99,12 @@ impl str::FromStr for CompactSignature {
 
     fn from_str(s: &str) -> Result<Self, Error> {
         let bytes = if s.starts_with("0x") {
-            if s.len() != H520::len_bytes() * 8 + 2 {
+            if s.len() != H520::len_bytes() * 2 + 2 {
                 return Err(Error::InvalidSignature);
             }
             hex::decode(&s.as_bytes()[2..]).map_err(|_| Error::InvalidSignature)?
         } else {
-            if s.len() != H520::len_bytes() * 8 {
+            if s.len() != H520::len_bytes() * 2 {
                 return Err(Error::InvalidSignature);
             }
             hex::decode(s).map_err(|_| Error::InvalidSignature)?

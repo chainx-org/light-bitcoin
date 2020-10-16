@@ -1,17 +1,17 @@
 use criterion::{black_box, criterion_group, criterion_main, Criterion};
 
 use light_bitcoin_chain::merkle_root;
-use light_bitcoin_primitives::{h256, hash_conv_endian, H256};
+use light_bitcoin_primitives::{h256, hash_rev, H256};
 
 fn prepare_hashes(num: u32) -> Vec<H256> {
     let mut vec = Vec::new();
-    let h1 = hash_conv_endian(h256(
+    let h1 = hash_rev(h256(
         "1da63abbc8cc611334a753c4c31de14d19839c65b2b284202eaf3165861fb58d",
     ));
-    let h2 = hash_conv_endian(h256(
+    let h2 = hash_rev(h256(
         "26c6a6f18d13d2f0787c1c0f3c5e23cf5bc8b3de685dd1923ae99f44c5341c0c",
     ));
-    let h3 = hash_conv_endian(h256(
+    let h3 = hash_rev(h256(
         "d1bc8d3ba4afc7e109612cb73acbdddac052c93025aa1f82942edabb7deb82a1",
     ));
     for v in 0..num {

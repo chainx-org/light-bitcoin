@@ -14,6 +14,13 @@ pub use self::bytes::{Bytes, TaggedBytes};
 pub use self::compact::Compact;
 pub use self::hash::{H160, H256, H264, H32, H512, H520};
 
+/// Convert the endian of hash, return the new hash.
+pub fn hash_rev<T: AsMut<[u8]>>(mut hash: T) -> T {
+    let bytes = hash.as_mut();
+    bytes.reverse();
+    hash
+}
+
 /// `s` must be 10 (with 0x prefix) or 8 (without 0x prefix) chars
 pub fn h32(s: &str) -> H32 {
     let hex = if s.starts_with("0x") {
@@ -44,6 +51,11 @@ pub fn h256(s: &str) -> H256 {
     H256::from_slice(&hex)
 }
 
+/// `s` must be 66 (with 0x prefix) or 64 (without 0x prefix) chars
+pub fn h256_rev(s: &str) -> H256 {
+    hash_rev(h256(s))
+}
+
 /// `s` must be 68 (with 0x prefix) or 66 (without 0x prefix) chars
 pub fn h264(s: &str) -> H264 {
     let hex = if s.starts_with("0x") {
@@ -72,13 +84,6 @@ pub fn h520(s: &str) -> H520 {
         hex::decode(s).unwrap()
     };
     H520::from_slice(&hex)
-}
-
-/// Convert the endian of hash, return the new hash.
-pub fn hash_conv_endian<T: AsMut<[u8]>>(mut hash: T) -> T {
-    let bytes = hash.as_mut();
-    bytes.reverse();
-    hash
 }
 
 #[cfg(test)]
@@ -127,16 +132,16 @@ mod tests {
     }
 
     #[test]
-    fn test_hash_conv_endian() {
+    fn test_hash_reverse() {
         let hash = h256("0000000000000000000a114b3a2780055b48e444c3e03b62b254d31d8074cad7");
-        let hash = hash_conv_endian(hash);
+        let hash = hash_rev(hash);
         assert_eq!(
             format!("{:?}", hash),
             "0xd7ca74801dd354b2623be0c344e4485b0580273a4b110a000000000000000000"
         );
 
         let hash = h512("0000000000000000000a114b3a2780055b48e444c3e03b62b254d31d8074cad70000000000000000000a114b3a2780055b48e444c3e03b62b254d31d8074cad7");
-        let hash = hash_conv_endian(hash);
+        let hash = hash_rev(hash);
         assert_eq!(
             format!("{:?}", hash),
             "0xd7ca74801dd354b2623be0c344e4485b0580273a4b110a000000000000000000d7ca74801dd354b2623be0c344e4485b0580273a4b110a000000000000000000"

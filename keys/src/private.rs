@@ -132,7 +132,7 @@ impl DisplayLayout for Private {
 
 #[cfg(test)]
 mod tests {
-    use light_bitcoin_primitives::{h256, hash_conv_endian};
+    use light_bitcoin_primitives::{h256, hash_rev};
 
     use super::*;
 
@@ -140,7 +140,7 @@ mod tests {
     fn test_private_to_string() {
         let private = Private {
             network: Network::Mainnet,
-            secret: hash_conv_endian(h256(
+            secret: hash_rev(h256(
                 "063377054c25f98bc538ac8dd2cf9064dd5d253a725ece0628a34e2f84803bd5",
             )),
             compressed: false,
@@ -156,7 +156,7 @@ mod tests {
     fn test_private_from_str() {
         let private = Private {
             network: Network::Mainnet,
-            secret: hash_conv_endian(h256(
+            secret: hash_rev(h256(
                 "063377054c25f98bc538ac8dd2cf9064dd5d253a725ece0628a34e2f84803bd5",
             )),
             compressed: false,

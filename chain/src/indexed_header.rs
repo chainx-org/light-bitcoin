@@ -1,7 +1,7 @@
 use light_bitcoin_primitives::{io, H256};
 use light_bitcoin_serialization::{Deserializable, Reader};
 
-use crate::block_header::{block_header_hash, BlockHeader};
+use crate::block_header::BlockHeader;
 use crate::read_and_hash::ReadAndHash;
 
 #[derive(Ord, PartialOrd, Eq, Copy, Clone, Debug, Default)]
@@ -31,7 +31,7 @@ impl IndexedBlockHeader {
     ///
     /// Hashes the contents of block header.
     pub fn from_raw(header: BlockHeader) -> Self {
-        IndexedBlockHeader::new(block_header_hash(&header), header)
+        IndexedBlockHeader::new(header.hash(), header)
     }
 }
 

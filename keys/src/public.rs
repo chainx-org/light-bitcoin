@@ -12,7 +12,6 @@ use crate::signature::{CompactSignature, Signature};
 use crate::{AddressHash, Message};
 
 /// Secret public key
-#[rustfmt::skip]
 #[derive(Ord, PartialOrd, Eq, Copy, Clone)]
 #[cfg_attr(feature = "std", derive(Serialize, Deserialize))]
 #[derive(Encode, Decode)]

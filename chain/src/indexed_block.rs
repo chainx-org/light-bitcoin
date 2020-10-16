@@ -4,8 +4,8 @@ use core::str;
 
 use light_bitcoin_primitives::{io, H256};
 use light_bitcoin_serialization::{
-    serialized_list_size, serialized_list_size_with_flags, Deserializable, Serializable,
-    SERIALIZE_TRANSACTION_WITNESS,
+    deserialize, serialized_list_size, serialized_list_size_with_flags, Deserializable,
+    Serializable, SERIALIZE_TRANSACTION_WITNESS,
 };
 
 use crate::block::Block;
@@ -37,7 +37,7 @@ impl str::FromStr for IndexedBlock {
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         let bytes = hex::decode(s).map_err(|_| io::Error::InvalidData)?;
-        light_bitcoin_serialization::deserialize(bytes.as_slice())
+        deserialize(bytes.as_slice())
     }
 }
 
@@ -54,7 +54,7 @@ impl IndexedBlock {
     /// Hashes block header + transactions.
     pub fn from_raw(block: Block) -> Self {
         let Block {
-            block_header,
+            header: block_header,
             transactions,
         } = block;
         Self::new(

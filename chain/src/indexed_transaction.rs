@@ -2,7 +2,7 @@ use light_bitcoin_primitives::{io, H256};
 use light_bitcoin_serialization::{Deserializable, Reader};
 
 use crate::read_and_hash::ReadAndHash;
-use crate::transaction::{transaction_hash, Transaction};
+use crate::transaction::Transaction;
 
 #[derive(Ord, PartialOrd, Eq, Clone, Debug, Default)]
 pub struct IndexedTransaction {
@@ -41,7 +41,7 @@ impl IndexedTransaction {
         Transaction: From<T>,
     {
         let transaction = Transaction::from(transaction);
-        Self::new(transaction_hash(&transaction), transaction)
+        Self::new(transaction.hash(), transaction)
     }
 }
 
