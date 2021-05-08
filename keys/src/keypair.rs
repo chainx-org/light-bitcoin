@@ -67,7 +67,7 @@ impl KeyPair {
 
     pub fn address(&self) -> Address {
         Address {
-            chain_name: Chain::Bitcoin, //***********************************
+            chain: Chain::Bitcoin, //***********************************
             kind: Type::P2PKH,
             network: self.private.network,
             hash: self.public.address_hash(),

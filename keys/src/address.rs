@@ -165,7 +165,7 @@ impl Deserializable for Chain {
 #[derive(Serializable, Deserializable)]
 #[derive(Encode, Decode)]
 pub struct Address {
-    pub chain_name: Chain,
+    pub chain: Chain,
     /// The type of the address.
     pub kind: Type,
     /// The network of the address.
@@ -208,7 +208,7 @@ impl DisplayLayout for Address {
     fn layout(&self) -> Self::Target {
         let mut result = [0u8; 25];
 
-        result[0] = match (self.chain_name, self.network, self.kind) {
+        result[0] = match (self.chain, self.network, self.kind) {
             (Chain::Bitcoin, Network::Mainnet, Type::P2PKH) => 0,
             (Chain::Bitcoin, Network::Mainnet, Type::P2SH) => 5,
             (Chain::Bitcoin, Network::Testnet, Type::P2PKH) => 111,
@@ -237,7 +237,7 @@ impl DisplayLayout for Address {
             return Err(Error::InvalidChecksum);
         }
 
-        let (chain_name, network, kind) = match data[0] {
+        let (chain, network, kind) = match data[0] {
             0 => (Chain::Bitcoin, Network::Mainnet, Type::P2PKH),
             5 => (Chain::Bitcoin, Network::Mainnet, Type::P2SH),
             111 => (Chain::Bitcoin, Network::Testnet, Type::P2PKH),
@@ -249,7 +249,7 @@ impl DisplayLayout for Address {
 
         let hash = AddressHash::from_slice(&data[1..21]);
         Ok(Address {
-            chain_name,
+            chain,
             kind,
             network,
             hash,
@@ -275,7 +275,7 @@ mod tests {
     #[test]
     fn test_address_to_string() {
         let address = Address {
-            chain_name: Chain::Bitcoin,
+            chain: Chain::Bitcoin,
             kind: Type::P2PKH,
             network: Network::Mainnet,
             hash: h160("3f4aa1fedf1f54eeb03b759deadb36676b184911"),
@@ -285,7 +285,7 @@ mod tests {
             "16meyfSoQV6twkAAxPe51RtMVz7PGRmWna".to_string(),
         );
         let address = Address {
-            chain_name: Chain::Bitcoin,
+            chain: Chain::Bitcoin,
             kind: Type::P2SH,
             network: Network::Mainnet,
             hash: h160("d246f700f4969106291a75ba85ad863cae68d667"),
@@ -299,7 +299,7 @@ mod tests {
     #[test]
     fn test_address_from_str() {
         let address = Address {
-            chain_name: Chain::Bitcoin,
+            chain: Chain::Bitcoin,
             kind: Type::P2PKH,
             network: Network::Mainnet,
             hash: h160("3f4aa1fedf1f54eeb03b759deadb36676b184911"),
@@ -310,7 +310,7 @@ mod tests {
         );
 
         let address = Address {
-            chain_name: Chain::Bitcoin,
+            chain: Chain::Bitcoin,
             kind: Type::P2SH,
             network: Network::Mainnet,
             hash: h160("d246f700f4969106291a75ba85ad863cae68d667"),
