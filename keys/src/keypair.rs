@@ -1,10 +1,9 @@
 //! Bitcoin key pair.
 
 use core::fmt;
-
 use light_bitcoin_primitives::{H264, H520};
 
-use crate::address::{Address,ChainName, Network, Type};
+use crate::address::{Address, ChainName, Network, Type};
 use crate::error::Error;
 use crate::private::Private;
 use crate::public::Public;
