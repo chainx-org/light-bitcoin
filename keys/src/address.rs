@@ -174,7 +174,6 @@ pub struct MultiAddress {
     pub hash: AddressHash,
 }
 
-
 impl fmt::Display for MultiAddress {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         bs58::encode(self.layout().0).into_string().fmt(f)
@@ -188,7 +187,7 @@ impl str::FromStr for MultiAddress {
         let hex = bs58::decode(s)
             .into_vec()
             .map_err(|_| Error::InvalidAddress)?;
-            MultiAddress::from_layout(&hex)
+        MultiAddress::from_layout(&hex)
     }
 }
 
@@ -354,7 +353,7 @@ mod tests {
     }
 
     #[test]
-    fn test_address_to_string() { 
+    fn test_address_to_string() {
         let address = Address {
             kind: Type::P2PKH,
             network: Network::Mainnet,
@@ -365,7 +364,6 @@ mod tests {
             "16meyfSoQV6twkAAxPe51RtMVz7PGRmWna".to_string(),
         );
         let address = Address {
-           
             kind: Type::P2SH,
             network: Network::Mainnet,
             hash: h160("d246f700f4969106291a75ba85ad863cae68d667"),
@@ -379,7 +377,6 @@ mod tests {
     #[test]
     fn test_address_from_str() {
         let address = Address {
-           
             kind: Type::P2PKH,
             network: Network::Mainnet,
             hash: h160("3f4aa1fedf1f54eeb03b759deadb36676b184911"),
@@ -390,7 +387,6 @@ mod tests {
         );
 
         let address = Address {
-          
             kind: Type::P2SH,
             network: Network::Mainnet,
             hash: h160("d246f700f4969106291a75ba85ad863cae68d667"),

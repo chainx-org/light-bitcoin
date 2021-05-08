@@ -3,7 +3,7 @@
 use core::fmt;
 use light_bitcoin_primitives::{H264, H520};
 
-use crate::address::{MultiAddress,Address, Chain, Network, Type};
+use crate::address::{Address, Chain, MultiAddress, Network, Type};
 use crate::error::Error;
 use crate::private::Private;
 use crate::public::Public;
