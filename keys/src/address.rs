@@ -164,7 +164,7 @@ impl Deserializable for Chain {
 #[cfg_attr(feature = "std", derive(Serialize, Deserialize))]
 #[derive(Serializable, Deserializable)]
 #[derive(Encode, Decode)]
-pub struct Address {
+pub struct MultiAddress {
     pub chain: Chain,
     /// The type of the address.
     pub kind: Type,
@@ -174,20 +174,21 @@ pub struct Address {
     pub hash: AddressHash,
 }
 
-impl fmt::Display for Address {
+
+impl fmt::Display for MultiAddress {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         bs58::encode(self.layout().0).into_string().fmt(f)
     }
 }
 
-impl str::FromStr for Address {
+impl str::FromStr for MultiAddress {
     type Err = Error;
 
     fn from_str(s: &str) -> Result<Self, Error> {
         let hex = bs58::decode(s)
             .into_vec()
             .map_err(|_| Error::InvalidAddress)?;
-        Address::from_layout(&hex)
+            MultiAddress::from_layout(&hex)
     }
 }
 
@@ -202,7 +203,7 @@ impl ops::Deref for AddressDisplayLayout {
     }
 }
 
-impl DisplayLayout for Address {
+impl DisplayLayout for MultiAddress {
     type Target = AddressDisplayLayout;
 
     fn layout(&self) -> Self::Target {
@@ -248,8 +249,88 @@ impl DisplayLayout for Address {
         };
 
         let hash = AddressHash::from_slice(&data[1..21]);
-        Ok(Address {
+        Ok(MultiAddress {
             chain,
+            kind,
+            network,
+            hash,
+        })
+    }
+}
+
+/// `AddressHash` with network identifier and format type
+#[derive(Ord, PartialOrd, Eq, PartialEq, Copy, Clone, Debug, Default)]
+#[cfg_attr(feature = "std", derive(Serialize, Deserialize))]
+#[derive(Serializable, Deserializable)]
+#[derive(Encode, Decode)]
+pub struct Address {
+    /// The type of the address.
+    pub kind: Type,
+    /// The network of the address.
+    pub network: Network,
+    /// Public key hash.
+    pub hash: AddressHash,
+}
+
+impl fmt::Display for Address {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        bs58::encode(self.layout().0).into_string().fmt(f)
+    }
+}
+
+impl str::FromStr for Address {
+    type Err = Error;
+
+    fn from_str(s: &str) -> Result<Self, Error> {
+        let hex = bs58::decode(s)
+            .into_vec()
+            .map_err(|_| Error::InvalidAddress)?;
+        Address::from_layout(&hex)
+    }
+}
+
+impl DisplayLayout for Address {
+    type Target = AddressDisplayLayout;
+
+    fn layout(&self) -> Self::Target {
+        let mut result = [0u8; 25];
+
+        result[0] = match (self.network, self.kind) {
+            (Network::Mainnet, Type::P2PKH) => 0,
+            (Network::Mainnet, Type::P2SH) => 5,
+            (Network::Testnet, Type::P2PKH) => 111,
+            (Network::Testnet, Type::P2SH) => 196,
+        };
+
+        result[1..21].copy_from_slice(self.hash.as_bytes());
+        let cs = checksum(&result[0..21]);
+        result[21..25].copy_from_slice(cs.as_bytes());
+        AddressDisplayLayout(result)
+    }
+
+    fn from_layout(data: &[u8]) -> Result<Self, Error>
+    where
+        Self: Sized,
+    {
+        if data.len() != 25 {
+            return Err(Error::InvalidAddress);
+        }
+
+        let cs = checksum(&data[0..21]);
+        if &data[21..] != cs.as_bytes() {
+            return Err(Error::InvalidChecksum);
+        }
+
+        let (network, kind) = match data[0] {
+            0 => (Network::Mainnet, Type::P2PKH),
+            5 => (Network::Mainnet, Type::P2SH),
+            111 => (Network::Testnet, Type::P2PKH),
+            196 => (Network::Testnet, Type::P2SH),
+            _ => return Err(Error::InvalidAddress),
+        };
+
+        let hash = AddressHash::from_slice(&data[1..21]);
+        Ok(Address {
             kind,
             network,
             hash,
@@ -265,7 +346,7 @@ mod tests {
 
     #[test]
     fn test_dogecoin_address() {
-        let address: Address = "D5gKqqDSirsdVpNA9efWKaBmsGD7TcckQ9".parse().unwrap();
+        let address: MultiAddress = "D5gKqqDSirsdVpNA9efWKaBmsGD7TcckQ9".parse().unwrap();
         assert_eq!(
             address.to_string(),
             "D5gKqqDSirsdVpNA9efWKaBmsGD7TcckQ9".to_string(),
@@ -273,9 +354,8 @@ mod tests {
     }
 
     #[test]
-    fn test_address_to_string() {
+    fn test_address_to_string() { 
         let address = Address {
-            chain: Chain::Bitcoin,
             kind: Type::P2PKH,
             network: Network::Mainnet,
             hash: h160("3f4aa1fedf1f54eeb03b759deadb36676b184911"),
@@ -285,7 +365,7 @@ mod tests {
             "16meyfSoQV6twkAAxPe51RtMVz7PGRmWna".to_string(),
         );
         let address = Address {
-            chain: Chain::Bitcoin,
+           
             kind: Type::P2SH,
             network: Network::Mainnet,
             hash: h160("d246f700f4969106291a75ba85ad863cae68d667"),
@@ -299,7 +379,7 @@ mod tests {
     #[test]
     fn test_address_from_str() {
         let address = Address {
-            chain: Chain::Bitcoin,
+           
             kind: Type::P2PKH,
             network: Network::Mainnet,
             hash: h160("3f4aa1fedf1f54eeb03b759deadb36676b184911"),
@@ -310,7 +390,7 @@ mod tests {
         );
 
         let address = Address {
-            chain: Chain::Bitcoin,
+          
             kind: Type::P2SH,
             network: Network::Mainnet,
             hash: h160("d246f700f4969106291a75ba85ad863cae68d667"),
