@@ -242,10 +242,10 @@ impl DisplayLayout for Address {
         }
 
         let (chain_name, network, kind) = match data[0] {
-            0 => (ChainName::Dogecoin, Network::Mainnet, Type::P2PKH),
-            5 => (ChainName::Dogecoin, Network::Mainnet, Type::P2SH),
-            111 => (ChainName::Dogecoin, Network::Testnet, Type::P2PKH),
-            196 => (ChainName::Dogecoin, Network::Testnet, Type::P2SH),
+            0 => (ChainName::Bitcoin, Network::Mainnet, Type::P2PKH),
+            5 => (ChainName::Bitcoin, Network::Mainnet, Type::P2SH),
+            111 => (ChainName::Bitcoin, Network::Testnet, Type::P2PKH),
+            196 => (ChainName::Bitcoin, Network::Testnet, Type::P2SH),
             30 => (ChainName::Dogecoin, Network::Mainnet, Type::P2PKH),
             113 => (ChainName::Dogecoin, Network::Testnet, Type::P2PKH),
             _ => return Err(Error::InvalidAddress),
