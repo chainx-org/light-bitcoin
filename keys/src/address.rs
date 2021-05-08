@@ -164,104 +164,6 @@ impl Deserializable for Chain {
 #[cfg_attr(feature = "std", derive(Serialize, Deserialize))]
 #[derive(Serializable, Deserializable)]
 #[derive(Encode, Decode)]
-pub struct MultiAddress {
-    pub chain: Chain,
-    /// The type of the address.
-    pub kind: Type,
-    /// The network of the address.
-    pub network: Network,
-    /// Public key hash.
-    pub hash: AddressHash,
-}
-
-impl fmt::Display for MultiAddress {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        bs58::encode(self.layout().0).into_string().fmt(f)
-    }
-}
-
-impl str::FromStr for MultiAddress {
-    type Err = Error;
-
-    fn from_str(s: &str) -> Result<Self, Error> {
-        let hex = bs58::decode(s)
-            .into_vec()
-            .map_err(|_| Error::InvalidAddress)?;
-        MultiAddress::from_layout(&hex)
-    }
-}
-
-#[derive(Ord, PartialOrd, Eq, PartialEq, Copy, Clone, Debug, Default)]
-pub struct AddressDisplayLayout([u8; 25]);
-
-impl ops::Deref for AddressDisplayLayout {
-    type Target = [u8];
-
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
-}
-
-impl DisplayLayout for MultiAddress {
-    type Target = AddressDisplayLayout;
-
-    fn layout(&self) -> Self::Target {
-        let mut result = [0u8; 25];
-
-        result[0] = match (self.chain, self.network, self.kind) {
-            (Chain::Bitcoin, Network::Mainnet, Type::P2PKH) => 0,
-            (Chain::Bitcoin, Network::Mainnet, Type::P2SH) => 5,
-            (Chain::Bitcoin, Network::Testnet, Type::P2PKH) => 111,
-            (Chain::Bitcoin, Network::Testnet, Type::P2SH) => 196,
-            (Chain::Dogecoin, Network::Mainnet, Type::P2PKH) => 30,
-            (Chain::Dogecoin, Network::Testnet, Type::P2PKH) => 113,
-            _ => panic!("Unsupported tri-tuple"),
-        };
-
-        result[1..21].copy_from_slice(self.hash.as_bytes());
-        let cs = checksum(&result[0..21]);
-        result[21..25].copy_from_slice(cs.as_bytes());
-        AddressDisplayLayout(result)
-    }
-
-    fn from_layout(data: &[u8]) -> Result<Self, Error>
-    where
-        Self: Sized,
-    {
-        if data.len() != 25 {
-            return Err(Error::InvalidAddress);
-        }
-
-        let cs = checksum(&data[0..21]);
-        if &data[21..] != cs.as_bytes() {
-            return Err(Error::InvalidChecksum);
-        }
-
-        let (chain, network, kind) = match data[0] {
-            0 => (Chain::Bitcoin, Network::Mainnet, Type::P2PKH),
-            5 => (Chain::Bitcoin, Network::Mainnet, Type::P2SH),
-            111 => (Chain::Bitcoin, Network::Testnet, Type::P2PKH),
-            196 => (Chain::Bitcoin, Network::Testnet, Type::P2SH),
-            30 => (Chain::Dogecoin, Network::Mainnet, Type::P2PKH),
-            113 => (Chain::Dogecoin, Network::Testnet, Type::P2PKH),
-            _ => return Err(Error::InvalidAddress),
-        };
-
-        let hash = AddressHash::from_slice(&data[1..21]);
-        Ok(MultiAddress {
-            chain,
-            kind,
-            network,
-            hash,
-        })
-    }
-}
-
-/// `AddressHash` with network identifier and format type
-#[derive(Ord, PartialOrd, Eq, PartialEq, Copy, Clone, Debug, Default)]
-#[cfg_attr(feature = "std", derive(Serialize, Deserialize))]
-#[derive(Serializable, Deserializable)]
-#[derive(Encode, Decode)]
 pub struct Address {
     /// The type of the address.
     pub kind: Type,
@@ -285,6 +187,17 @@ impl str::FromStr for Address {
             .into_vec()
             .map_err(|_| Error::InvalidAddress)?;
         Address::from_layout(&hex)
+    }
+}
+
+#[derive(Ord, PartialOrd, Eq, PartialEq, Copy, Clone, Debug, Default)]
+pub struct AddressDisplayLayout(pub(crate) [u8; 25]);
+
+impl ops::Deref for AddressDisplayLayout {
+    type Target = [u8];
+
+    fn deref(&self) -> &Self::Target {
+        &self.0
     }
 }
 
@@ -342,15 +255,6 @@ mod tests {
     use light_bitcoin_primitives::h160;
 
     use super::*;
-
-    #[test]
-    fn test_dogecoin_address() {
-        let address: MultiAddress = "D5gKqqDSirsdVpNA9efWKaBmsGD7TcckQ9".parse().unwrap();
-        assert_eq!(
-            address.to_string(),
-            "D5gKqqDSirsdVpNA9efWKaBmsGD7TcckQ9".to_string(),
-        )
-    }
 
     #[test]
     fn test_address_to_string() {
