@@ -121,21 +121,21 @@ impl Deserializable for Network {
 #[cfg_attr(feature = "std", derive(Serialize, Deserialize))]
 #[derive(Encode, Decode)]
 pub enum ChainName {
-    DOGE,
-    BITCOIN,
+    Dogecoin,
+    Bitcoin,
 }
 
 impl Default for ChainName {
     fn default() -> ChainName {
-        ChainName::BITCOIN
+        ChainName::Bitcoin
     }
 }
 
 impl ChainName {
     pub fn from(v: u32) -> Option<Self> {
         match v {
-            0 => Some(ChainName::BITCOIN),
-            1 => Some(ChainName::DOGE),
+            0 => Some(ChainName::Bitcoin),
+            1 => Some(ChainName::Dogecoin),
             _ => None,
         }
     }
@@ -144,8 +144,8 @@ impl ChainName {
 impl Serializable for ChainName {
     fn serialize(&self, s: &mut Stream) {
         let _stream = match *self {
-            ChainName::BITCOIN => s.append(&ChainName::BITCOIN),
-            ChainName::DOGE => s.append(&ChainName::DOGE),
+            ChainName::Bitcoin => s.append(&ChainName::Bitcoin),
+            ChainName::Dogecoin => s.append(&ChainName::Dogecoin),
         };
     }
 }
@@ -213,12 +213,12 @@ impl DisplayLayout for Address {
         let mut result = [0u8; 25];
 
         result[0] = match (self.chain_name, self.network, self.kind) {
-            (ChainName::BITCOIN, Network::Mainnet, Type::P2PKH) => 0,
-            (ChainName::BITCOIN, Network::Mainnet, Type::P2SH) => 5,
-            (ChainName::BITCOIN, Network::Testnet, Type::P2PKH) => 111,
-            (ChainName::BITCOIN, Network::Testnet, Type::P2SH) => 196,
-            (ChainName::DOGE, Network::Mainnet, Type::P2PKH) => 30,
-            (ChainName::DOGE, Network::Testnet, Type::P2PKH) => 113,
+            (ChainName::Bitcoin, Network::Mainnet, Type::P2PKH) => 0,
+            (ChainName::Bitcoin, Network::Mainnet, Type::P2SH) => 5,
+            (ChainName::Bitcoin, Network::Testnet, Type::P2PKH) => 111,
+            (ChainName::Bitcoin, Network::Testnet, Type::P2SH) => 196,
+            (ChainName::Dogecoin, Network::Mainnet, Type::P2PKH) => 30,
+            (ChainName::Dogecoin, Network::Testnet, Type::P2PKH) => 113,
             _ => panic!("Unsupported tri-tuple"),
         };
 
@@ -242,12 +242,12 @@ impl DisplayLayout for Address {
         }
 
         let (chain_name, network, kind) = match data[0] {
-            0 => (ChainName::BITCOIN, Network::Mainnet, Type::P2PKH),
-            5 => (ChainName::BITCOIN, Network::Mainnet, Type::P2SH),
-            111 => (ChainName::BITCOIN, Network::Testnet, Type::P2PKH),
-            196 => (ChainName::BITCOIN, Network::Testnet, Type::P2SH),
-            30 => (ChainName::DOGE, Network::Mainnet, Type::P2PKH),
-            113 => (ChainName::DOGE, Network::Testnet, Type::P2PKH),
+            0 => (ChainName::Dogecoin, Network::Mainnet, Type::P2PKH),
+            5 => (ChainName::Dogecoin, Network::Mainnet, Type::P2SH),
+            111 => (ChainName::Dogecoin, Network::Testnet, Type::P2PKH),
+            196 => (ChainName::Dogecoin, Network::Testnet, Type::P2SH),
+            30 => (ChainName::Dogecoin, Network::Mainnet, Type::P2PKH),
+            113 => (ChainName::Dogecoin, Network::Testnet, Type::P2PKH),
             _ => return Err(Error::InvalidAddress),
         };
 
@@ -279,7 +279,7 @@ mod tests {
     #[test]
     fn test_address_to_string() {
         let address = Address {
-            chain_name: ChainName::BITCOIN,
+            chain_name: ChainName::Bitcoin,
             kind: Type::P2PKH,
             network: Network::Mainnet,
             hash: h160("3f4aa1fedf1f54eeb03b759deadb36676b184911"),
@@ -289,7 +289,7 @@ mod tests {
             "16meyfSoQV6twkAAxPe51RtMVz7PGRmWna".to_string(),
         );
         let address = Address {
-            chain_name: ChainName::BITCOIN,
+            chain_name: ChainName::Bitcoin,
             kind: Type::P2SH,
             network: Network::Mainnet,
             hash: h160("d246f700f4969106291a75ba85ad863cae68d667"),
@@ -303,7 +303,7 @@ mod tests {
     #[test]
     fn test_address_from_str() {
         let address = Address {
-            chain_name: ChainName::BITCOIN,
+            chain_name: ChainName::Bitcoin,
             kind: Type::P2PKH,
             network: Network::Mainnet,
             hash: h160("3f4aa1fedf1f54eeb03b759deadb36676b184911"),
@@ -314,7 +314,7 @@ mod tests {
         );
 
         let address = Address {
-            chain_name: ChainName::BITCOIN,
+            chain_name: ChainName::Bitcoin,
             kind: Type::P2SH,
             network: Network::Mainnet,
             hash: h160("d246f700f4969106291a75ba85ad863cae68d667"),
