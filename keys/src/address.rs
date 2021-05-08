@@ -161,10 +161,7 @@ impl Deserializable for ChainName {
     }
 }
 
-
-
 //****************************************************************************
-
 
 /// `AddressHash` with network identifier and format type
 #[derive(Ord, PartialOrd, Eq, PartialEq, Copy, Clone, Debug, Default)]
@@ -215,13 +212,13 @@ impl DisplayLayout for Address {
     fn layout(&self) -> Self::Target {
         let mut result = [0u8; 25];
 
-        result[0] = match (self.chain_name,self.network, self.kind) {
-            (ChainName::BITCOIN,Network::Mainnet, Type::P2PKH) => 0,
-            (ChainName::BITCOIN,Network::Mainnet, Type::P2SH) => 5,
-            (ChainName::BITCOIN,Network::Testnet, Type::P2PKH) => 111,
-            (ChainName::BITCOIN,Network::Testnet, Type::P2SH) => 196,
-            (ChainName::DOGE,Network::Mainnet, Type::P2PKH) => 30,
-            (ChainName::DOGE,Network::Testnet,Type::P2PKH) => 113,
+        result[0] = match (self.chain_name, self.network, self.kind) {
+            (ChainName::BITCOIN, Network::Mainnet, Type::P2PKH) => 0,
+            (ChainName::BITCOIN, Network::Mainnet, Type::P2SH) => 5,
+            (ChainName::BITCOIN, Network::Testnet, Type::P2PKH) => 111,
+            (ChainName::BITCOIN, Network::Testnet, Type::P2SH) => 196,
+            (ChainName::DOGE, Network::Mainnet, Type::P2PKH) => 30,
+            (ChainName::DOGE, Network::Testnet, Type::P2PKH) => 113,
             _ => panic!("Unsupported tri-tuple"),
         };
 
@@ -235,7 +232,7 @@ impl DisplayLayout for Address {
     where
         Self: Sized,
     {
-        if data.len() != 25 {  
+        if data.len() != 25 {
             return Err(Error::InvalidAddress);
         }
 
@@ -243,19 +240,18 @@ impl DisplayLayout for Address {
         if &data[21..] != cs.as_bytes() {
             return Err(Error::InvalidChecksum);
         }
-  
-        let (chain_name,network, kind) = match data[0] {
-            0 => (ChainName::BITCOIN,Network::Mainnet, Type::P2PKH),
-            5 => (ChainName::BITCOIN,Network::Mainnet, Type::P2SH),
-            111 => (ChainName::BITCOIN,Network::Testnet, Type::P2PKH),
-            196 => (ChainName::BITCOIN,Network::Testnet, Type::P2SH),
-            30 => (ChainName::DOGE,Network::Mainnet,Type::P2PKH),
-            113 =>(ChainName::DOGE,Network::Testnet,Type::P2PKH),
-            _ => {return Err(Error::InvalidAddress)},
+
+        let (chain_name, network, kind) = match data[0] {
+            0 => (ChainName::BITCOIN, Network::Mainnet, Type::P2PKH),
+            5 => (ChainName::BITCOIN, Network::Mainnet, Type::P2SH),
+            111 => (ChainName::BITCOIN, Network::Testnet, Type::P2PKH),
+            196 => (ChainName::BITCOIN, Network::Testnet, Type::P2SH),
+            30 => (ChainName::DOGE, Network::Mainnet, Type::P2PKH),
+            113 => (ChainName::DOGE, Network::Testnet, Type::P2PKH),
+            _ => return Err(Error::InvalidAddress),
         };
 
         let hash = AddressHash::from_slice(&data[1..21]);
-       
         Ok(Address {
             chain_name,
             kind,
@@ -282,7 +278,6 @@ mod tests {
 
     #[test]
     fn test_address_to_string() {
-   
         let address = Address {
             chain_name: ChainName::BITCOIN,
             kind: Type::P2PKH,
