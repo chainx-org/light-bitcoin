@@ -7,4 +7,3 @@ pub use light_bitcoin_merkle as merkle;
 pub use light_bitcoin_primitives as primitives;
 pub use light_bitcoin_script as script;
 pub use light_bitcoin_serialization as serialization;
-pub mod test;
