@@ -245,7 +245,6 @@ impl DisplayLayout for Address {
         }
   
         let (chain_name,network, kind) = match data[0] {
-    
             0 => (ChainName::BITCOIN,Network::Mainnet, Type::P2PKH),
             5 => (ChainName::BITCOIN,Network::Mainnet, Type::P2SH),
             111 => (ChainName::BITCOIN,Network::Testnet, Type::P2PKH),
