@@ -1,7 +1,5 @@
 //!For multiChain such as dogecoin
-
-use core::{fmt, ops, str};
-
+use core::{fmt, str};
 use light_bitcoin_crypto::checksum;
 use light_bitcoin_primitives::io;
 use light_bitcoin_serialization::{Deserializable, Reader, Serializable, Stream};
