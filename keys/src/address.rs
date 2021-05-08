@@ -115,50 +115,6 @@ impl Deserializable for Network {
     }
 }
 
-#[derive(Ord, PartialOrd, Eq, PartialEq, Copy, Clone, Debug)]
-#[cfg_attr(feature = "std", derive(Serialize, Deserialize))]
-#[derive(Encode, Decode)]
-pub enum Chain {
-    Dogecoin,
-    Bitcoin,
-}
-
-impl Default for Chain {
-    fn default() -> Chain {
-        Chain::Bitcoin
-    }
-}
-
-impl Chain {
-    pub fn from(v: u32) -> Option<Self> {
-        match v {
-            0 => Some(Chain::Bitcoin),
-            1 => Some(Chain::Dogecoin),
-            _ => None,
-        }
-    }
-}
-
-impl Serializable for Chain {
-    fn serialize(&self, s: &mut Stream) {
-        let _stream = match *self {
-            Chain::Bitcoin => s.append(&Chain::Bitcoin),
-            Chain::Dogecoin => s.append(&Chain::Dogecoin),
-        };
-    }
-}
-
-impl Deserializable for Chain {
-    fn deserialize<T>(reader: &mut Reader<T>) -> Result<Self, io::Error>
-    where
-        Self: Sized,
-        T: io::Read,
-    {
-        let t: u32 = reader.read()?;
-        Chain::from(t).ok_or(io::Error::ReadMalformedData)
-    }
-}
-
 /// `AddressHash` with network identifier and format type
 #[derive(Ord, PartialOrd, Eq, PartialEq, Copy, Clone, Debug, Default)]
 #[cfg_attr(feature = "std", derive(Serialize, Deserialize))]
