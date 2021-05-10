@@ -1,6 +1,7 @@
 //! Bitcoin key pair.
 
 use core::fmt;
+
 use light_bitcoin_primitives::{H264, H520};
 
 use crate::address::{Address, Network, Type};
