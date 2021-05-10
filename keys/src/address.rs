@@ -223,7 +223,7 @@ mod tests {
             address.to_string(),
             "16meyfSoQV6twkAAxPe51RtMVz7PGRmWna".to_string(),
         );
-
+        
         let address = Address {
             kind: Type::P2SH,
             network: Network::Mainnet,
