@@ -6,6 +6,7 @@ use light_bitcoin_primitives::{H264, H520};
 
 use crate::address::{Address, Network, Type};
 use crate::error::Error;
+use crate::multiaddress::{Chain, MultiAddress};
 use crate::private::Private;
 use crate::public::Public;
 use crate::Secret;
@@ -63,6 +64,15 @@ impl KeyPair {
                 compressed: false,
             },
             public: Public::Normal(public),
+        }
+    }
+
+    pub fn multiaddress(&self, chain: Chain) -> MultiAddress {
+        MultiAddress {
+            chain,
+            kind: Type::P2PKH,
+            network: self.private.network,
+            hash: self.public.address_hash(),
         }
     }
 

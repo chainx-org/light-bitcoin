@@ -147,7 +147,7 @@ impl str::FromStr for Address {
 }
 
 #[derive(Ord, PartialOrd, Eq, PartialEq, Copy, Clone, Debug, Default)]
-pub struct AddressDisplayLayout([u8; 25]);
+pub struct AddressDisplayLayout(pub(crate) [u8; 25]);
 
 impl ops::Deref for AddressDisplayLayout {
     type Target = [u8];
