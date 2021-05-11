@@ -4,8 +4,8 @@ use light_bitcoin_crypto::checksum;
 use light_bitcoin_primitives::io;
 use light_bitcoin_serialization::{Deserializable, Reader, Serializable, Stream};
 
-use codec::{Decode, Encode};
 use bch_addr::Converter;
+use codec::{Decode, Encode};
 #[cfg(feature = "std")]
 use serde::{Deserialize, Serialize};
 
@@ -152,31 +152,31 @@ impl DisplayLayout for MultiAddress {
                 // Determine the type of blockchain based on the tail identifier(BTC or BCH)
                 if data.len() == 26 {
                     (Chain::Bitcoincash, Network::Mainnet, Type::P2PKH)
-                }else{
+                } else {
                     (Chain::Bitcoin, Network::Mainnet, Type::P2PKH)
                 }
-            },
+            }
             5 => {
                 if data.len() == 26 {
                     (Chain::Bitcoincash, Network::Mainnet, Type::P2SH)
-                }else{
+                } else {
                     (Chain::Bitcoin, Network::Mainnet, Type::P2SH)
                 }
-            },
+            }
             111 => {
                 if data.len() == 26 {
                     (Chain::Bitcoincash, Network::Testnet, Type::P2PKH)
-                }else{
+                } else {
                     (Chain::Bitcoin, Network::Testnet, Type::P2PKH)
                 }
-            },
+            }
             196 => {
                 if data.len() == 26 {
                     (Chain::Bitcoincash, Network::Testnet, Type::P2SH)
-                }else{
+                } else {
                     (Chain::Bitcoin, Network::Testnet, Type::P2SH)
                 }
-            },
+            }
             30 => (Chain::Dogecoin, Network::Mainnet, Type::P2PKH),
             113 => (Chain::Dogecoin, Network::Testnet, Type::P2PKH),
             _ => return Err(Error::InvalidAddress),
@@ -207,7 +207,9 @@ mod tests {
 
     #[test]
     fn test_bitcoincash_address() {
-        let address: MultiAddress = "qqfc3lxxylme0w87c5j2wdmsqln6e844xcmsdssvzy".parse().unwrap();
+        let address: MultiAddress = "qqfc3lxxylme0w87c5j2wdmsqln6e844xcmsdssvzy"
+            .parse()
+            .unwrap();
         assert_eq!(
             address.to_string(),
             "12nHwhNfruCi7jZ2zMxSNGHmjUGjN2xhmR".to_string(),
