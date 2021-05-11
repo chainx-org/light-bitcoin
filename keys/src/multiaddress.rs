@@ -1,10 +1,11 @@
-//!For multiChain such as dogecoin
+//!For multiChain such as dogecoin and bitcoincash
 use core::{fmt, str};
 use light_bitcoin_crypto::checksum;
 use light_bitcoin_primitives::io;
 use light_bitcoin_serialization::{Deserializable, Reader, Serializable, Stream};
 
 use codec::{Decode, Encode};
+use bch_addr::Converter;
 #[cfg(feature = "std")]
 use serde::{Deserialize, Serialize};
 
@@ -19,6 +20,7 @@ use crate::AddressHash;
 pub enum Chain {
     Dogecoin,
     Bitcoin,
+    Bitcoincash,
 }
 
 impl Default for Chain {
@@ -32,6 +34,7 @@ impl Chain {
         match v {
             0 => Some(Chain::Bitcoin),
             1 => Some(Chain::Dogecoin),
+            2 => Some(Chain::Bitcoincash),
             _ => None,
         }
     }
@@ -42,6 +45,7 @@ impl Serializable for Chain {
         let _stream = match *self {
             Chain::Bitcoin => s.append(&Chain::Bitcoin),
             Chain::Dogecoin => s.append(&Chain::Dogecoin),
+            Chain::Bitcoincash => s.append(&Chain::Bitcoincash),
         };
     }
 }
@@ -83,6 +87,20 @@ impl str::FromStr for MultiAddress {
     type Err = Error;
 
     fn from_str(s: &str) -> Result<Self, Error> {
+        // The new BCH address length is 42
+        // Used for BCH old and new address translation
+        // the old addresses are not supported
+        if s.len() == 42 {
+            let converter = Converter::new();
+            let legacy_addr = converter.to_legacy_addr(&s).unwrap();
+            // The old BCH address format is similar to the Bitcoin address format
+            let mut new_hex = bs58::decode(legacy_addr)
+                .into_vec()
+                .map_err(|_| Error::InvalidAddress)?;
+            // If the address is BCH, the tail is marked with 0
+            new_hex.push(0);
+            return MultiAddress::from_layout(&new_hex);
+        }
         let hex = bs58::decode(s)
             .into_vec()
             .map_err(|_| Error::InvalidAddress)?;
@@ -103,6 +121,10 @@ impl DisplayLayout for MultiAddress {
             (Chain::Bitcoin, Network::Testnet, Type::P2SH) => 196,
             (Chain::Dogecoin, Network::Mainnet, Type::P2PKH) => 30,
             (Chain::Dogecoin, Network::Testnet, Type::P2PKH) => 113,
+            (Chain::Bitcoincash, Network::Mainnet, Type::P2PKH) => 0,
+            (Chain::Bitcoincash, Network::Mainnet, Type::P2SH) => 5,
+            (Chain::Bitcoincash, Network::Testnet, Type::P2PKH) => 111,
+            (Chain::Bitcoincash, Network::Testnet, Type::P2SH) => 196,
             _ => panic!("Unsupported tri-tuple"),
         };
 
@@ -116,20 +138,45 @@ impl DisplayLayout for MultiAddress {
     where
         Self: Sized,
     {
-        if data.len() != 25 {
+        if data.len() != 25 && data.len() != 26 {
             return Err(Error::InvalidAddress);
         }
 
         let cs = checksum(&data[0..21]);
-        if &data[21..] != cs.as_bytes() {
+        if &data[21..25] != cs.as_bytes() {
             return Err(Error::InvalidChecksum);
         }
 
         let (chain, network, kind) = match data[0] {
-            0 => (Chain::Bitcoin, Network::Mainnet, Type::P2PKH),
-            5 => (Chain::Bitcoin, Network::Mainnet, Type::P2SH),
-            111 => (Chain::Bitcoin, Network::Testnet, Type::P2PKH),
-            196 => (Chain::Bitcoin, Network::Testnet, Type::P2SH),
+            0 => {
+                // Determine the type of blockchain based on the tail identifier(BTC or BCH)
+                if data.len() == 26 {
+                    (Chain::Bitcoincash, Network::Mainnet, Type::P2PKH)
+                }else{
+                    (Chain::Bitcoin, Network::Mainnet, Type::P2PKH)
+                }
+            },
+            5 => {
+                if data.len() == 26 {
+                    (Chain::Bitcoincash, Network::Mainnet, Type::P2SH)
+                }else{
+                    (Chain::Bitcoin, Network::Mainnet, Type::P2SH)
+                }
+            },
+            111 => {
+                if data.len() == 26 {
+                    (Chain::Bitcoincash, Network::Testnet, Type::P2PKH)
+                }else{
+                    (Chain::Bitcoin, Network::Testnet, Type::P2PKH)
+                }
+            },
+            196 => {
+                if data.len() == 26 {
+                    (Chain::Bitcoincash, Network::Testnet, Type::P2SH)
+                }else{
+                    (Chain::Bitcoin, Network::Testnet, Type::P2SH)
+                }
+            },
             30 => (Chain::Dogecoin, Network::Mainnet, Type::P2PKH),
             113 => (Chain::Dogecoin, Network::Testnet, Type::P2PKH),
             _ => return Err(Error::InvalidAddress),
@@ -155,6 +202,15 @@ mod tests {
         assert_eq!(
             address.to_string(),
             "D5gKqqDSirsdVpNA9efWKaBmsGD7TcckQ9".to_string(),
+        )
+    }
+
+    #[test]
+    fn test_bitcoincash_address() {
+        let address: MultiAddress = "qqfc3lxxylme0w87c5j2wdmsqln6e844xcmsdssvzy".parse().unwrap();
+        assert_eq!(
+            address.to_string(),
+            "12nHwhNfruCi7jZ2zMxSNGHmjUGjN2xhmR".to_string(),
         )
     }
 }
