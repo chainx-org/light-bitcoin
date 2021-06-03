@@ -20,7 +20,7 @@ pub use self::address::{Address, Network, Type};
 pub use self::display::DisplayLayout;
 pub use self::error::Error;
 pub use self::keypair::KeyPair;
-pub use self::multiaddress::MultiAddress;
+pub use self::multiaddress::{Chain, MultiAddress};
 pub use self::private::Private;
 pub use self::public::Public;
 pub use self::signature::{CompactSignature, Signature};
