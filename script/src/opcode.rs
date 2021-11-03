@@ -216,9 +216,10 @@ pub enum Opcode {
     OP_NOP9 = 0xb8,
     OP_NOP10 = 0xb9,
 
-    // BCH crypto
-    OP_CHECKDATASIG = 0xba,
-    OP_CHECKDATASIGVERIFY = 0xbb,
+    // Opcode added by BIP 342 (Tapscript)
+    OP_CHECKSIGADD = 0xba,
+
+    OP_INVALIDOPCODE = 0xff,
 }
 
 impl fmt::Display for Opcode {
@@ -437,9 +438,9 @@ impl Opcode {
             0xb8 => Some(OP_NOP9),
             0xb9 => Some(OP_NOP10),
 
-            // BCH crypto
-            0xba => Some(OP_CHECKDATASIG),
-            0xbb => Some(OP_CHECKDATASIGVERIFY),
+            // BIP 342 (Tapscript)
+            0xba => Some(OP_CHECKSIGADD),
+            0xff => Some(OP_INVALIDOPCODE),
 
             _ => None,
         }
@@ -477,6 +478,17 @@ impl Opcode {
 
     pub fn is_within_op_n(self) -> bool {
         self >= Opcode::OP_1 && self <= Opcode::OP_16
+    }
+
+    pub fn is_success(self) -> bool {
+        self == Opcode::OP_RESERVED
+            || self == Opcode::OP_VER
+            || (self >= Opcode::OP_CAT && self <= Opcode::OP_RIGHT)
+            || (self >= Opcode::OP_INVERT && self <= Opcode::OP_XOR)
+            || (self >= Opcode::OP_RESERVED1 && self <= Opcode::OP_RESERVED2)
+            || (self >= Opcode::OP_2MUL && self <= Opcode::OP_2DIV)
+            || (self >= Opcode::OP_MUL && self <= Opcode::OP_RSHIFT)
+            || (self > Opcode::OP_CHECKSIGADD && self < Opcode::OP_INVALIDOPCODE)
     }
 
     pub fn decode_op_n(self) -> u8 {
@@ -1197,16 +1209,6 @@ mod tests {
         assert_eq!(
             Opcode::OP_NOP10,
             Opcode::from_u8(Opcode::OP_NOP10 as u8).unwrap()
-        );
-
-        // BCH crypto
-        assert_eq!(
-            Opcode::OP_CHECKDATASIG,
-            Opcode::from_u8(Opcode::OP_CHECKDATASIG as u8).unwrap()
-        );
-        assert_eq!(
-            Opcode::OP_CHECKDATASIGVERIFY,
-            Opcode::from_u8(Opcode::OP_CHECKDATASIGVERIFY as u8).unwrap()
         );
     }
 }

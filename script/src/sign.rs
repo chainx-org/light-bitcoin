@@ -683,6 +683,60 @@ pub fn verify_taproot_commitment(control: &[u8], program: &XOnly, scirpt: &Scrip
     true
 }
 
+/// Verify Taproot Commitment
+/// Refer: https://github.com/bitcoin/bips/blob/master/bip-0341.mediawiki#script-validation-rules
+pub fn verify_taproot_commitment1(control: &[u8], program: &XOnly, scirpt: &H256) -> bool {
+    if control.len() < 33 || (control.len() - 33) % 32 != 0 {
+        return false;
+    }
+    let pubkey: PublicKey = if let Ok(d) = XOnly::try_from(&control[1..33]) {
+        if let Ok(pk) = d.try_into() {
+            pk
+        } else {
+            return false;
+        }
+    } else {
+        return false;
+    };
+
+
+    let merkle_root =
+        compute_taproot_merkle_root(Bytes::from(control), scirpt.clone());
+
+    let mut stream = Stream::default();
+    stream.append_slice(&control[1..33]);
+    stream.append(&merkle_root);
+    let out = stream.out();
+    let hash = sha2::Sha256::default()
+        .tagged(b"TapTweak")
+        .add(&out[..])
+        .finalize();
+    let mut keys = [0u8; 32];
+    keys.copy_from_slice(hash.as_slice());
+    let mut t = Scalar::default();
+    if bool::from(t.set_b32(&keys)) {
+        return false;
+    };
+
+    let mut p: Affine = pubkey.into();
+
+    p.y.normalize();
+    let p = if p.y.is_odd() { p.neg() } else { p };
+
+    let mut pj = secp256k1::curve::Jacobian::default();
+    pj.set_ge(&p);
+
+    let mut rj = Jacobian::default();
+    // Q = P + int(t)G.
+    ECMULT_CONTEXT.ecmult(&mut rj, &pj, &Scalar::from_int(1), &t);
+    let mut r = Affine::from_gej(&rj);
+    let rx: XOnly = (&mut r.x).into();
+    if rx != *program {
+        return false;
+    }
+    true
+}
+
 /// Check Taproot tx
 pub fn check_taproot_tx(tx: &Transaction, spent_outputs: &[TransactionOutput]) -> bool {
     if tx.inputs.len() != spent_outputs.len() {

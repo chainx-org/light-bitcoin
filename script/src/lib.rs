@@ -6,10 +6,12 @@ extern crate alloc;
 mod builder;
 mod error;
 mod flags;
+mod interpreter;
 mod num;
 mod opcode;
 mod script;
 mod sign;
+mod stack;
 mod verify;
 
 pub use light_bitcoin_primitives::*;

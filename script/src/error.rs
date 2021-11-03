@@ -56,6 +56,9 @@ pub enum Error {
     // Softfork safeness
     DiscourageUpgradableNops,
     DiscourageUpgradableWitnessProgram,
+    DiscourageUpgradableTaprootVersion,
+    DiscourageUpgradableOpSuccess,
+    DiscourageUpgradablePubkeytype,
 
     // SegWit-related errors
     WitnessProgramWrongLength,
@@ -128,6 +131,11 @@ impl core::fmt::Display for Error {
             Error::DiscourageUpgradableWitnessProgram => {
                 "Discourage Upgradable Witness Program".fmt(f)
             }
+            Error::DiscourageUpgradableTaprootVersion => {
+                "Discourage Upgradable Taproot Version".fmt(f)
+            }
+            Error::DiscourageUpgradableOpSuccess => "Discourage Upgradable Op Success".fmt(f),
+            Error::DiscourageUpgradablePubkeytype => "Discourage Upgradable PubkeyType".fmt(f),
 
             // SegWit-related errors
             Error::WitnessProgramWrongLength => "Witness program has incorrect length".fmt(f),

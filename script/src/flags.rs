@@ -101,6 +101,18 @@ pub struct VerificationFlags {
 
     /// Support OP_CHECKDATASIG and OP_CHECKDATASIGVERIFY opcodes.
     pub verify_checkdatasig: bool,
+
+    // Taproot/Tapscript validation (BIPs 341 & 342)
+    pub verify_taproot: bool,
+
+    // Making unknown Taproot leaf versions non-standard
+    pub verify_discourage_upgradable_taproot_version: bool,
+
+    // Making unknown OP_SUCCESS non-standard
+    pub verify_discourage_op_success: bool,
+
+    // Making unknown public key versions (in BIP 342 scripts) non-standard
+    pub verify_discourage_upgradable_pubkeytype: bool,
 }
 
 impl VerificationFlags {
@@ -201,6 +213,26 @@ impl VerificationFlags {
 
     pub fn verify_checkdatasig(mut self, value: bool) -> Self {
         self.verify_checkdatasig = value;
+        self
+    }
+
+    pub fn verify_taproot(mut self, value: bool) -> Self {
+        self.verify_taproot = value;
+        self
+    }
+
+    pub fn verify_discourage_upgradable_taproot_version(mut self, value: bool) -> Self {
+        self.verify_discourage_upgradable_taproot_version = value;
+        self
+    }
+
+    pub fn verify_discourage_op_success(mut self, value: bool) -> Self {
+        self.verify_discourage_op_success = value;
+        self
+    }
+
+    pub fn verify_discourage_upgradable_pubkeytype(mut self, value: bool) -> Self {
+        self.verify_discourage_upgradable_pubkeytype = value;
         self
     }
 }

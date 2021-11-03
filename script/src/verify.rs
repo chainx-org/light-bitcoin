@@ -2,15 +2,33 @@ use light_bitcoin_chain::constants::{
     LOCKTIME_THRESHOLD, SEQUENCE_FINAL, SEQUENCE_LOCKTIME_DISABLE_FLAG, SEQUENCE_LOCKTIME_MASK,
     SEQUENCE_LOCKTIME_TYPE_FLAG,
 };
-use light_bitcoin_keys::{Message, Public, Signature};
+use light_bitcoin_keys::{Message, Public, SchnorrSignature, Signature};
 
+use crate::interpreter::ScriptExecutionData;
 use crate::num::Num;
 use crate::script::Script;
-use crate::sign::{SignatureVersion, TransactionInputSigner};
+use crate::sign::{Sighash, SignatureVersion, TransactionInputSigner};
 
 /// Checks transaction signature
 pub trait SignatureChecker {
     fn verify_signature(&self, signature: &Signature, public: &Public, hash: &Message) -> bool;
+
+    fn verify_schnorr_signature(
+        &self,
+        signature: &SchnorrSignature,
+        public: &Public,
+        hash: &Message,
+    ) -> bool;
+
+    fn check_schnorr_signature(
+        &self,
+        signature: &SchnorrSignature,
+        public: &Public,
+        execdata: &ScriptExecutionData,
+        script_code: &Script,
+        sighashtype: u32,
+        version: SignatureVersion,
+    ) -> bool;
 
     fn check_signature(
         &self,
@@ -31,6 +49,29 @@ pub struct NoopSignatureChecker;
 impl SignatureChecker for NoopSignatureChecker {
     fn verify_signature(&self, signature: &Signature, public: &Public, hash: &Message) -> bool {
         public.verify(hash, signature).unwrap_or(false)
+    }
+
+    fn verify_schnorr_signature(
+        &self,
+        signature: &SchnorrSignature,
+        public: &Public,
+        hash: &Message,
+    ) -> bool {
+        public
+            .verify_schnorr(hash, signature.into())
+            .unwrap_or(false)
+    }
+
+    fn check_schnorr_signature(
+        &self,
+        _: &SchnorrSignature,
+        _: &Public,
+        _: &ScriptExecutionData,
+        _: &Script,
+        _: u32,
+        _: SignatureVersion,
+    ) -> bool {
+        false
     }
 
     fn check_signature(
@@ -63,6 +104,39 @@ pub struct TransactionSignatureChecker {
 impl SignatureChecker for TransactionSignatureChecker {
     fn verify_signature(&self, signature: &Signature, public: &Public, hash: &Message) -> bool {
         public.verify(hash, signature).unwrap_or(false)
+    }
+
+    fn verify_schnorr_signature(
+        &self,
+        signature: &SchnorrSignature,
+        public: &Public,
+        hash: &Message,
+    ) -> bool {
+        public
+            .verify_schnorr(hash, signature.into())
+            .unwrap_or(false)
+    }
+
+    fn check_schnorr_signature(
+        &self,
+        signature: &SchnorrSignature,
+        public: &Public,
+        execdata: &ScriptExecutionData,
+        script_code: &Script,
+        sighashtype: u32,
+        version: SignatureVersion,
+    ) -> bool {
+        let sighash = Sighash::from_u32(version, sighashtype);
+
+        let hash = self.signer.signature_hash_schnorr(
+            version,
+            sighash,
+            execdata,
+            self.input_index as u32,
+            self.input_amount,
+            script_code,
+        );
+        self.verify_schnorr_signature(signature.into(), public, &hash)
     }
 
     fn check_signature(
