@@ -1,6 +1,6 @@
 [package]
 name = "light-bitcoin-serialization"
-version = "0.3.0"
+version = "0.2.0"
 authors = ["The ChainX Authors"]
 edition = "2018"
 license = "GPL-3.0"
