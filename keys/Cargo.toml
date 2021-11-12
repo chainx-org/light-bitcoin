@@ -24,7 +24,7 @@ std = [
 bs58 = { version = "0.4", default-features = false, features = ["alloc"] }
 codec = { package = "parity-scale-codec", version = "2.0.0",  default-features = false, features = ["derive"] }
 hex = { version = "0.4", default-features = false }
-libsecp256k1 = { version = "0.3.5", default-features = false, features = ["hmac"] }
+libsecp256k1 = { version = "0.6.0", default-features = false, features = ["hmac", "static-context"] }
 serde = { version = "1.0", features = ["derive"], optional = true }
 scale-info = { version = "1.0", default-features = false, features = ["derive"] }
 
