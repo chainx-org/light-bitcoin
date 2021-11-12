@@ -10,7 +10,7 @@ use light_bitcoin_primitives::H520;
 
 use crate::error::Error;
 
-#[derive(Ord, PartialOrd, Eq, PartialEq, Clone, Default)]
+#[derive(Ord, PartialOrd, Eq, PartialEq, Clone, Default, scale_info::TypeInfo)]
 pub struct Signature(Vec<u8>);
 
 impl fmt::Debug for Signature {
@@ -72,7 +72,7 @@ impl<'a> From<&'a [u8]> for Signature {
 }
 
 /// Recovery ID (1 byte) + Compact signature (64 bytes)
-#[derive(Ord, PartialOrd, Eq, PartialEq, Copy, Clone, Default)]
+#[derive(Ord, PartialOrd, Eq, PartialEq, Copy, Clone, Default, scale_info::TypeInfo)]
 pub struct CompactSignature(H520);
 
 impl fmt::Debug for CompactSignature {

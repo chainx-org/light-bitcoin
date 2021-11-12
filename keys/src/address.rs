@@ -21,7 +21,7 @@ use crate::AddressHash;
 
 /// There are two address formats currently in use.
 /// https://bitcoin.org/en/developer-reference#address-conversion
-#[derive(Ord, PartialOrd, Eq, PartialEq, Copy, Clone, Debug)]
+#[derive(Ord, PartialOrd, Eq, PartialEq, Copy, Clone, Debug, scale_info::TypeInfo)]
 #[cfg_attr(feature = "std", derive(Serialize, Deserialize))]
 #[derive(Encode, Decode)]
 pub enum Type {
@@ -71,7 +71,7 @@ impl Deserializable for Type {
     }
 }
 
-#[derive(Ord, PartialOrd, Eq, PartialEq, Copy, Clone, Debug)]
+#[derive(Ord, PartialOrd, Eq, PartialEq, Copy, Clone, Debug, scale_info::TypeInfo)]
 #[cfg_attr(feature = "std", derive(Serialize, Deserialize))]
 #[derive(Encode, Decode)]
 pub enum Network {
@@ -116,7 +116,7 @@ impl Deserializable for Network {
 }
 
 /// `AddressHash` with network identifier and format type
-#[derive(Ord, PartialOrd, Eq, PartialEq, Copy, Clone, Debug, Default)]
+#[derive(Ord, PartialOrd, Eq, PartialEq, Copy, Clone, Debug, Default, scale_info::TypeInfo)]
 #[cfg_attr(feature = "std", derive(Serialize, Deserialize))]
 #[derive(Serializable, Deserializable)]
 #[derive(Encode, Decode)]
@@ -146,7 +146,7 @@ impl str::FromStr for Address {
     }
 }
 
-#[derive(Ord, PartialOrd, Eq, PartialEq, Copy, Clone, Debug, Default)]
+#[derive(Ord, PartialOrd, Eq, PartialEq, Copy, Clone, Debug, Default, scale_info::TypeInfo)]
 pub struct AddressDisplayLayout([u8; 25]);
 
 impl ops::Deref for AddressDisplayLayout {

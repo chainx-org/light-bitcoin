@@ -1,4 +1,4 @@
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, scale_info::TypeInfo)]
 pub enum Error {
     InvalidPublic,
     InvalidSecret,

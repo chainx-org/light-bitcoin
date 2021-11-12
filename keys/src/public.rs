@@ -12,7 +12,7 @@ use crate::signature::{CompactSignature, Signature};
 use crate::{AddressHash, Message};
 
 /// Secret public key
-#[derive(Ord, PartialOrd, Eq, PartialEq, Copy, Clone)]
+#[derive(Ord, PartialOrd, Eq, PartialEq, Copy, Clone, scale_info::TypeInfo)]
 #[cfg_attr(feature = "std", derive(Serialize, Deserialize))]
 #[cfg_attr(feature = "std", serde(untagged))]
 #[derive(Encode, Decode)]

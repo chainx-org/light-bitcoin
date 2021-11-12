@@ -9,6 +9,7 @@ license = "GPL-3.0"
 default = ["std"]
 std = [
   "codec/std",
+  "scale-info/std",
 
   "light-bitcoin-chain/std",
   "light-bitcoin-primitives/std",
@@ -17,6 +18,7 @@ std = [
 
 [dependencies]
 codec = { package = "parity-scale-codec", version = "2.0.0", default-features = false }
+scale-info = { version = "1.0", default-features = false, features = ["derive"] }
 
 light-bitcoin-chain = { path = "../chain", default-features = false }
 light-bitcoin-primitives = { path = "../primitives", default-features = false }
