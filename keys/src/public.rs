@@ -21,7 +21,7 @@ use crate::{
 use secp256k1::curve::{Affine, Field};
 
 /// Secret public key
-#[derive(Ord, PartialOrd, Eq, PartialEq, Copy, Clone)]
+#[derive(Ord, PartialOrd, Eq, PartialEq, Copy, Clone, scale_info::TypeInfo)]
 #[cfg_attr(feature = "std", derive(Serialize, Deserialize))]
 #[cfg_attr(feature = "std", serde(untagged))]
 #[derive(Encode, Decode)]
@@ -89,15 +89,15 @@ impl Public {
 
     pub fn verify(&self, message: &Message, signature: &Signature) -> Result<bool, Error> {
         let public = match self {
-            Public::Normal(pubkey) => secp256k1::PublicKey::parse(pubkey.as_fixed_bytes())?,
+            Public::Normal(pubkey) => libsecp256k1::PublicKey::parse(pubkey.as_fixed_bytes())?,
             Public::Compressed(pubkey) => {
-                secp256k1::PublicKey::parse_compressed(pubkey.as_fixed_bytes())?
+                libsecp256k1::PublicKey::parse_compressed(pubkey.as_fixed_bytes())?
             }
         };
-        let mut signature = secp256k1::Signature::parse_der_lax(&**signature)?;
+        let mut signature = libsecp256k1::Signature::parse_der_lax(&**signature)?;
         signature.normalize_s();
-        let message = secp256k1::Message::parse(message.as_fixed_bytes());
-        Ok(secp256k1::verify(&message, &signature, &public))
+        let message = libsecp256k1::Message::parse(message.as_fixed_bytes());
+        Ok(libsecp256k1::verify(&message, &signature, &public))
     }
 
     pub fn verify_schnorr(&self, message: &Message, signature: [u8; 64]) -> Result<bool, Error> {
@@ -114,24 +114,24 @@ impl Public {
 
     pub fn verify_compact(&self, message: &Message, signature: &[u8; 64]) -> Result<bool, Error> {
         let public = match self {
-            Public::Normal(pubkey) => secp256k1::PublicKey::parse(pubkey.as_fixed_bytes())?,
+            Public::Normal(pubkey) => libsecp256k1::PublicKey::parse(pubkey.as_fixed_bytes())?,
             Public::Compressed(pubkey) => {
-                secp256k1::PublicKey::parse_compressed(pubkey.as_fixed_bytes())?
+                libsecp256k1::PublicKey::parse_compressed(pubkey.as_fixed_bytes())?
             }
         };
-        let signature = secp256k1::Signature::parse(signature);
-        let message = secp256k1::Message::parse(message.as_fixed_bytes());
-        Ok(secp256k1::verify(&message, &signature, &public))
+        let signature = libsecp256k1::Signature::parse_standard(signature)?;
+        let message = libsecp256k1::Message::parse(message.as_fixed_bytes());
+        Ok(libsecp256k1::verify(&message, &signature, &public))
     }
 
     pub fn recover_compact(message: &Message, signature: &CompactSignature) -> Result<Self, Error> {
         let recovery_id = (signature[0] - 27) & 3;
         let compressed = (signature[0] - 27) & 4 != 0;
-        let recovery_id = secp256k1::RecoveryId::parse(recovery_id)?;
+        let recovery_id = libsecp256k1::RecoveryId::parse(recovery_id)?;
         let sign = H512::from_slice(&signature[1..65]);
-        let signature = secp256k1::Signature::parse(sign.as_fixed_bytes());
-        let message = secp256k1::Message::parse(message.as_fixed_bytes());
-        let pub_key = secp256k1::recover(&message, &signature, &recovery_id)?;
+        let signature = libsecp256k1::Signature::parse_standard(sign.as_fixed_bytes())?;
+        let message = libsecp256k1::Message::parse(message.as_fixed_bytes());
+        let pub_key = libsecp256k1::recover(&message, &signature, &recovery_id)?;
 
         let public = if compressed {
             let public = H264::from_slice(&pub_key.serialize_compressed());
