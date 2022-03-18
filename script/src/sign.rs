@@ -509,6 +509,175 @@ impl TransactionInputSigner {
     }
 }
 
+impl TransactionInputSigner {
+    /// script_pubkey - script_pubkey of input's previous_output pubkey
+    pub fn signature_msg(
+        &self,
+        input_index: usize,
+        input_amount: u64,
+        script_pubkey: &Script,
+        sigversion: SignatureVersion,
+        sighashtype: u32,
+    ) -> Bytes {
+        let sighash = Sighash::from_u32(sigversion, sighashtype);
+        match sigversion {
+            SignatureVersion::ForkId if sighash.fork_id => self.signature_msg_fork_id(
+                input_index,
+                input_amount,
+                script_pubkey,
+                sighashtype,
+                sighash,
+            ),
+            SignatureVersion::Base | SignatureVersion::ForkId => {
+                self.signature_msg_original(input_index, script_pubkey, sighashtype, sighash)
+            }
+            SignatureVersion::WitnessV0 => self.signature_msg_witness0(
+                input_index,
+                input_amount,
+                script_pubkey,
+                sighashtype,
+                sighash,
+            ),
+            _ => todo!(),
+        }
+    }
+
+    pub fn signature_msg_original(
+        &self,
+        input_index: usize,
+        script_pubkey: &Script,
+        sighashtype: u32,
+        sighash: Sighash,
+    ) -> Bytes {
+        if input_index >= self.inputs.len() {
+            let mut h256 = [0u8; 32];
+            h256[0] = 1;
+            return h256.to_vec().into();
+        }
+
+        if sighash.base == SighashBase::Single && input_index >= self.outputs.len() {
+            let mut h256 = [0u8; 32];
+            h256[0] = 1;
+            return h256.to_vec().into();
+        }
+
+        let script_pubkey = script_pubkey.without_separators();
+
+        let inputs = if sighash.anyone_can_pay {
+            let input = &self.inputs[input_index];
+            vec![TransactionInput {
+                previous_output: input.previous_output,
+                script_sig: script_pubkey.to_bytes(),
+                sequence: input.sequence,
+                script_witness: vec![],
+            }]
+        } else {
+            self.inputs
+                .iter()
+                .enumerate()
+                .map(|(n, input)| TransactionInput {
+                    previous_output: input.previous_output,
+                    script_sig: if n == input_index {
+                        script_pubkey.to_bytes()
+                    } else {
+                        Bytes::default()
+                    },
+                    sequence: match sighash.base {
+                        SighashBase::Single | SighashBase::None if n != input_index => 0,
+                        _ => input.sequence,
+                    },
+                    script_witness: vec![],
+                })
+                .collect()
+        };
+
+        let outputs = match sighash.base {
+            SighashBase::All => self.outputs.clone(),
+            SighashBase::Single => self
+                .outputs
+                .iter()
+                .take(input_index + 1)
+                .enumerate()
+                .map(|(n, out)| {
+                    if n == input_index {
+                        out.clone()
+                    } else {
+                        TransactionOutput::default()
+                    }
+                })
+                .collect(),
+            SighashBase::None => Vec::new(),
+        };
+
+        let tx = Transaction {
+            inputs,
+            outputs,
+            version: self.version,
+            lock_time: self.lock_time,
+        };
+
+        let mut stream = Stream::default();
+        stream.append(&tx);
+        stream.append(&sighashtype);
+        stream.out()
+    }
+
+    fn signature_msg_witness0(
+        &self,
+        input_index: usize,
+        input_amount: u64,
+        script_pubkey: &Script,
+        sighashtype: u32,
+        sighash: Sighash,
+    ) -> Bytes {
+        let hash_prevouts = compute_hash_prevouts(sighash, &self.inputs);
+        let hash_sequence = compute_hash_sequence(sighash, &self.inputs);
+        let hash_outputs = compute_hash_outputs(sighash, input_index, &self.outputs);
+
+        let mut stream = Stream::default();
+        stream.append(&self.version);
+        stream.append(&hash_prevouts);
+        stream.append(&hash_sequence);
+        stream.append(&self.inputs[input_index].previous_output);
+        stream.append_list(&**script_pubkey);
+        stream.append(&input_amount);
+        stream.append(&self.inputs[input_index].sequence);
+        stream.append(&hash_outputs);
+        stream.append(&self.lock_time);
+        stream.append(&sighashtype); // this also includes 24-bit fork id. which is 0 for BitcoinCash
+        stream.out()
+    }
+
+    fn signature_msg_fork_id(
+        &self,
+        input_index: usize,
+        input_amount: u64,
+        script_pubkey: &Script,
+        sighashtype: u32,
+        sighash: Sighash,
+    ) -> Bytes {
+        if input_index >= self.inputs.len() {
+            let mut h256 = [0u8; 32];
+            h256[0] = 1;
+            return h256.to_vec().into();
+        }
+
+        if sighash.base == SighashBase::Single && input_index >= self.outputs.len() {
+            let mut h256 = [0u8; 32];
+            h256[0] = 1;
+            return h256.to_vec().into();
+        }
+
+        self.signature_msg_witness0(
+            input_index,
+            input_amount,
+            script_pubkey,
+            sighashtype,
+            sighash,
+        )
+    }
+}
+
 fn compute_hash_prevouts(sighash: Sighash, inputs: &[UnsignedTransactionInput]) -> H256 {
     if sighash.anyone_can_pay {
         H256::zero()
