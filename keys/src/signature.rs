@@ -141,6 +141,19 @@ impl str::FromStr for CompactSignature {
     }
 }
 
+impl From<CompactSignature> for Signature {
+    fn from(data: CompactSignature) -> Self {
+        let mut sig = [0u8; 64];
+        sig.copy_from_slice(&data.0.as_bytes()[1..65]);
+        libsecp256k1::Signature::parse_standard(&sig)
+            .expect("CompactSignature must be signature")
+            .serialize_der()
+            .as_ref()
+            .to_vec()
+            .into()
+    }
+}
+
 impl From<H520> for CompactSignature {
     fn from(h: H520) -> Self {
         CompactSignature(h)
