@@ -29,7 +29,7 @@ bs58 = { version = "0.4", default-features = false, features = ["alloc"] }
 codec = { package = "parity-scale-codec", version = "3.0.0",  default-features = false, features = ["derive"] }
 digest = { version = "0.9.0", default-features = false }
 hex = { version = "0.4", default-features = false, features = ["alloc"] }
-libsecp256k1 = { git = "https://github.com/chainx-org/libsecp256k1.git", default-features = false, features = ["hmac", "static-context"] }
+libsecp256k1 = { git = "https://github.com/chainx-org/libsecp256k1", branch="upgrade-2021",default-features = false, features = ["hmac", "static-context"] }
 musig2 = { git = "https://github.com/chainx-org/Musig2", branch = "upgrade-2021", default-features = false }
 serde = { version = "1.0", features = ["derive"], optional = true }
 scale-info = { version = "2.0.1", default-features = false, features = ["derive"] }
