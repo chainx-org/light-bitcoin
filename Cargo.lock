@@ -707,7 +707,7 @@ dependencies = [
 [[package]]
 name = "musig2"
 version = "0.1.0"
-source = "git+https://github.com/chainx-org/Musig2?branch=lib#6b850aa16a6c8df1e593ea52ab82cbb660e11d15"
+source = "git+ssh://git@github.com/chainx-org/Musig2?branch=lib#534677da2f947bd1ced385d35bcfa3cb7f1f7e8b"
 dependencies = [
  "arrayref",
  "digest",
