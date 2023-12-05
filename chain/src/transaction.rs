@@ -384,8 +384,7 @@ impl Transaction {
 
 impl Serializable for Transaction {
     fn serialize(&self, stream: &mut Stream) {
-        let include_transaction_witness =
-            stream.include_transaction_witness() && self.has_witness();
+        let include_transaction_witness = self.has_witness();
         if include_transaction_witness {
             stream
                 .append(&self.version)
