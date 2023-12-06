@@ -384,7 +384,8 @@ impl Transaction {
 
 impl Serializable for Transaction {
     fn serialize(&self, stream: &mut Stream) {
-        let include_transaction_witness = self.has_witness();
+        let include_transaction_witness =
+            stream.include_transaction_witness() && self.has_witness();
         if include_transaction_witness {
             stream
                 .append(&self.version)
@@ -508,7 +509,7 @@ impl codec::Decode for OutPoint {
 
 impl codec::Encode for Transaction {
     fn encode(&self) -> Vec<u8> {
-        let value = serialize::<Transaction>(self);
+        let value = serialize_with_flags::<Transaction>(self, SERIALIZE_TRANSACTION_WITNESS);
         value.encode()
     }
 }
