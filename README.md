@@ -9,6 +9,7 @@
 [codecov-url]: https://codecov.io/gh/chainx-org/light-bitcoin
 
 A light bitcoin library with `no_std` support.
+The first Bitcoin-native WASM light client.
 
 ## Acknowledgements
 
